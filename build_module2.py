@@ -577,7 +577,8 @@ def all_pages():
     """Every modified page in book order, including the lesson files that import this one."""
     from lessons_15_19_simple import BOOK as l15  # simplified Lessons 15-19 (readiness TEKS only)
     from topic_e_simple import BOOK as l20  # simplified Topic E (readiness TEKS only)
-    book = {**BOOK, **l15, **l20}
+    from topic_f_simple import BOOK as l25  # simplified Topic F (readiness TEKS only)
+    book = {**BOOK, **l15, **l20, **l25}
     return [book[k] for k in sorted(book)]
 
 
