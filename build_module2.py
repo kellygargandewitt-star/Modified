@@ -570,7 +570,17 @@ def page_113(c):
     footer(c, 17, "Round to the nearest hundred on the vertical number line.", 113)
 
 
-PAGES = [page_93, page_95, page_109, page_110, page_111, page_113]
+BOOK = {93: page_93, 95: page_95, 109: page_109, 110: page_110, 111: page_111, 113: page_113}
+
+
+def all_pages():
+    """Every modified page in book order, including the lesson files that import this one."""
+    from lessons_15_19 import BOOK as more
+    book = {**BOOK, **more}
+    return [book[k] for k in sorted(book)]
+
+
+PAGES = list(BOOK.values())
 
 
 def main(out="G3_M2_Modified.pdf", pages=None, title="Bluebonnet Learning Grade 3 Module 2 – Modified"):
@@ -584,4 +594,4 @@ def main(out="G3_M2_Modified.pdf", pages=None, title="Bluebonnet Learning Grade 
 
 
 if __name__ == "__main__":
-    main()
+    main(pages=all_pages())
