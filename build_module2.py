@@ -575,8 +575,9 @@ BOOK = {93: page_93, 95: page_95, 109: page_109, 110: page_110, 111: page_111, 1
 
 def all_pages():
     """Every modified page in book order, including the lesson files that import this one."""
-    from lessons_15_19 import BOOK as more
-    book = {**BOOK, **more}
+    from lessons_15_19 import BOOK as l15
+    from lessons_20_24 import BOOK as l20
+    book = {**BOOK, **l15, **l20}
     return [book[k] for k in sorted(book)]
 
 
