@@ -34,7 +34,7 @@ def rich_line(c, x, y, parts, size):
     return x
 
 
-def header(c, title):
+def header(c, title, suffix=" (Modified)"):
     top = H - 40
     c.setFillColor(DARK)
     c.rect(MARGIN, top - 22, 240, 22, stroke=0, fill=1)
@@ -48,7 +48,7 @@ def header(c, title):
     c.drawCentredString(W - MARGIN - 21, top - 16, "3 • 2")
     c.setFillColor(black)
     c.setFont("Sans-Bold", 9)
-    c.drawRightString(W - MARGIN - 52, top - 15, title + " (Modified)")
+    c.drawRightString(W - MARGIN - 52, top - 15, title + suffix)
 
     c.setFont("Sans", 12)
     y = top - 52
@@ -66,21 +66,22 @@ def footer(c, lesson, objective, page_no):
     c.setLineWidth(1)
     c.setStrokeColor(black)
     c.setFont("Sans-Bold", 9)
-    c.drawString(MARGIN, 44, f"Lesson {lesson}:")
+    label = lesson if isinstance(lesson, str) else f"Lesson {lesson}:"
+    c.drawString(MARGIN, 44, label)
     c.setFont("Sans", 9)
-    c.drawString(MARGIN + 62, 44, objective)
+    c.drawString(MARGIN + pdfmetrics.stringWidth(label, "Sans-Bold", 9) + 8, 44, objective)
     c.setFont("Sans-Bold", 14)
     c.drawCentredString(W / 2, 22, f"Page {page_no}")
 
 
-def helper_box(c, x, y, w, title, lines):
+def helper_box(c, x, y, w, title, lines, bg=HELP_BG, edge=HELP_LINE):
     """Key-word helper box. lines are lists of (text, bold) parts."""
     h = 30 + 20 * len(lines)
-    c.setFillColor(HELP_BG)
-    c.setStrokeColor(HELP_LINE)
+    c.setFillColor(bg)
+    c.setStrokeColor(edge)
     c.setLineWidth(1.5)
     c.roundRect(x, y - h, w, h, 8, stroke=1, fill=1)
-    c.setFillColor(HELP_LINE)
+    c.setFillColor(edge)
     c.setFont("Sans-Bold", 12)
     c.drawString(x + 12, y - 20, title)
     c.setFillColor(black)
@@ -193,9 +194,10 @@ def pv_chart(c, x, y, w, places, numbers, shade):
     cw, hh, rh = w / cols, 34, 32
     rows = len(numbers)
     # shaded column = the place to compare first
-    c.setFillColor(HexColor("#FFF2B3"))
-    c.rect(x + shade * cw, y - hh - rows * rh, cw, hh + rows * rh, stroke=0, fill=1)
-    c.setFillColor(black)
+    if shade is not None:
+        c.setFillColor(HexColor("#FFF2B3"))
+        c.rect(x + shade * cw, y - hh - rows * rh, cw, hh + rows * rh, stroke=0, fill=1)
+        c.setFillColor(black)
     c.setLineWidth(1)
     c.rect(x, y - hh - rows * rh, w, hh + rows * rh)
     for i in range(1, cols):
@@ -571,10 +573,10 @@ def page_113(c):
 PAGES = [page_93, page_95, page_109, page_110, page_111, page_113]
 
 
-def main(out="G3_M2_Modified.pdf"):
+def main(out="G3_M2_Modified.pdf", pages=None, title="Bluebonnet Learning Grade 3 Module 2 – Modified"):
     c = canvas.Canvas(out, pagesize=letter)
-    c.setTitle("Bluebonnet Learning Grade 3 Module 2 – Modified")
-    for draw in PAGES:
+    c.setTitle(title)
+    for draw in pages or PAGES:
         draw(c)
         c.showPage()
     c.save()
