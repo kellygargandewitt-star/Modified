@@ -344,7 +344,231 @@ def page_109(c):
     footer(c, 16, "Round two- and three-digit numbers to the nearest ten on the vertical number line.", 109)
 
 
-PAGES = [page_93, page_95, page_109]
+def teks(c, y, label):
+    c.setFont("Sans", 9)
+    c.setFillColor(HexColor("#666666"))
+    c.drawRightString(W - MARGIN, y + 8, label)
+    c.setFillColor(black)
+
+
+ROUND_TEN_HELP = [
+    [("≈", True), ("  means  ", False), ("about", True)],
+    [("Look at the ", False), ("ones", True), (" digit:   ", False),
+     ("0, 1, 2, 3, 4", True), (" → round ", False), ("down", True), ("     ", False),
+     ("5, 6, 7, 8, 9", True), (" → round ", False), ("up", True)],
+]
+
+
+def page_110(c):
+    """Lesson 16 Problem Set (continued).
+    Original 2: animals 26, 52, 142 pounds.  Original 3: 29 min + 19 min, then round."""
+    y = header(c, "Lesson 16 Problem Set")
+    teks(c, y, "TEKS 3.4A, 3.4B")
+    y = helper_box(c, MARGIN, y, W - 2 * MARGIN, "Word Helper", ROUND_TEN_HELP)
+
+    y -= 22
+    rich_line(c, MARGIN, y, [("2. ", True), ("Round each animal's weight to the nearest ", False),
+                             ("10 pounds", True), (".", False)], 13)
+    y -= 12
+    cols = [140, 190, W - 2 * MARGIN - 330]
+    heads = ["Animal", "Number Line", "Round to the nearest 10"]
+    hh, rh = 26, 96
+    x = MARGIN
+    c.setFillColor(LIGHT)
+    c.rect(MARGIN, y - hh, W - 2 * MARGIN, hh, stroke=0, fill=1)
+    c.setFillColor(black)
+    for w_, h_ in zip(cols, heads):
+        c.setFont("Sans-Bold", 11)
+        c.drawCentredString(x + w_ / 2, y - 17, h_)
+        x += w_
+    animals = [("cheetah", 27), ("dog", 53), ("sheep", 84)]
+    table_bottom = y - hh - rh * len(animals)
+    c.rect(MARGIN, table_bottom, W - 2 * MARGIN, y - table_bottom)
+    c.line(MARGIN + cols[0], y, MARGIN + cols[0], table_bottom)
+    c.line(MARGIN + cols[0] + cols[1], y, MARGIN + cols[0] + cols[1], table_bottom)
+    for i, (img, n) in enumerate(animals):
+        ry = y - hh - i * rh
+        c.line(MARGIN, ry, W - MARGIN, ry)
+        c.drawImage(f"images/{img}.png", MARGIN + 14, ry - 66, width=64, height=58,
+                    preserveAspectRatio=True, mask="auto")
+        c.setFont("Sans-Bold", 13)
+        c.drawRightString(MARGIN + cols[0] - 10, ry - 86, f"{n} pounds")
+        low = n // 10 * 10
+        vertical_line(c, MARGIN + cols[0] + 80, ry - 22, ry - rh + 22, low)
+        x2 = MARGIN + cols[0] + cols[1] + 14
+        rich_line(c, x2, ry - 38, [("Between ", False), (str(low), True), (" and ", False),
+                                   (str(low + 10), True)], 11)
+        xx = rich_line(c, x2, ry - 70, [(f"{n} ≈ ", True)], 15)
+        blank(c, xx + 2, ry - 70, 50)
+        c.setFont("Sans", 11)
+        c.drawString(xx + 58, ry - 70, "pounds")
+
+    y = table_bottom - 26
+    rich_line(c, MARGIN, y, [("3. ", True), ("Mrs. Smith washes her car for ", False), ("22 minutes", True),
+                             (". She weeds her garden for ", False), ("15 minutes", True), (".", False)], 12)
+    y -= 30
+    rich_line(c, MARGIN + 18, y, [("a. ", True), ("How many minutes in all?", True),
+                                  ("   (in all → +)", False)], 12)
+    y -= 30
+    xx = rich_line(c, MARGIN + 40, y, [("22 + 15 = ", True)], 18)
+    blank(c, xx + 4, y, 70)
+    c.setFont("Sans", 12)
+    c.drawString(xx + 82, y, "minutes")
+    y -= 32
+    rich_line(c, MARGIN + 18, y, [("b. ", True), ("Round your answer to the nearest ", False),
+                                  ("10 minutes", True), (".", False)], 12)
+    y -= 30
+    x = blank(c, MARGIN + 40, y, 60)
+    x = rich_line(c, x + 6, y, [(" ≈ ", True)], 18)
+    blank(c, x + 6, y, 60)
+    c.setFont("Sans", 12)
+    c.drawString(x + 72, y, "minutes")
+
+    footer(c, 16, "Round two- and three-digit numbers to the nearest ten on the vertical number line.", 110)
+
+
+def page_111(c):
+    """Lesson 16 Exit Ticket.  Original 1: a 26, b 276.  Original 2: Phong rounds 603 to 610."""
+    y = header(c, "Lesson 16 Exit Ticket")
+    teks(c, y, "TEKS 3.4B")
+    y = helper_box(c, MARGIN, y, W - 2 * MARGIN, "Word Helper", ROUND_TEN_HELP)
+
+    y -= 22
+    rich_line(c, MARGIN, y, [("1. ", True), ("Round to the nearest ", False), ("ten", True),
+                             (". Put a dot on the number line.", False)], 13)
+    top = y - 14
+    ch = 150
+    cw = (W - 2 * MARGIN) / 2
+    for i, (letter_, n) in enumerate([("a", 24), ("b", 137)]):
+        x0 = MARGIN + i * cw
+        c.rect(x0, top - ch, cw, ch)
+        low = n // 10 * 10
+        ty = top - 26
+        x = rich_line(c, x0 + 10, ty, [(f"{letter_}.  ", False), (f"{n} ≈ ", True)], 16)
+        blank(c, x + 2, ty, 55)
+        rich_line(c, x0 + 10, ty - 34, [("Between ", False), (str(low), True),
+                                        (" and ", False), (str(low + 10), True)], 11)
+        rich_line(c, x0 + 10, ty - 60, [("Closer to:", False)], 11)
+        blank(c, x0 + 80, ty - 60, 55)
+        vertical_line(c, x0 + cw - 70, top - 28, top - ch + 28, low)
+
+    y = top - ch - 34
+    rich_line(c, MARGIN, y, [("2. ", True), ("Phong rounds ", False), ("42", True), (" to the nearest ten. He says it is ", False),
+                             ("50", True), (".", False)], 13)
+    y -= 22
+    rich_line(c, MARGIN + 22, y, [("Is he correct?", True), ("  Use the number line to check.", False)], 13)
+
+    vertical_line(c, W - MARGIN - 45, y - 30, y - 230, 40)
+
+    ty = y - 50
+    lines = [
+        [("Put a dot on ", False), ("42", True), (" on the number line.", False)],
+        None,
+        [("42", True), (" is closer to  ", False)],
+        None,
+        [("42 ≈ ", True)],
+        None,
+        [("Circle one:     Phong is ", False), ("correct", True), ("   /   ", False), ("not correct", True)],
+    ]
+    for parts in lines:
+        if parts is None:
+            ty -= 18
+            continue
+        x = rich_line(c, MARGIN + 22, ty, parts, 13)
+        if parts[0][0] in ("42",) or parts[0][0] == "42 ≈ ":
+            blank(c, x + 4, ty, 60)
+        ty -= 22
+
+    ty -= 14
+    rich_line(c, MARGIN + 22, ty, [("Finish the sentence:", True)], 13)
+    ty -= 30
+    x = rich_line(c, MARGIN + 22, ty, [("The ones digit is ", False)], 13)
+    x = blank(c, x + 2, ty, 40)
+    rich_line(c, x + 6, ty, [(", so I round  ", False), ("up", True), ("  /  ", False),
+                             ("down", True), (".", False)], 13)
+
+    footer(c, 16, "Round two- and three-digit numbers to the nearest ten on the vertical number line.", 111)
+
+
+def disk(c, x, y, label, r=9):
+    c.circle(x, y, r)
+    c.setFont("Sans", 7 if len(label) > 2 else 8)
+    c.drawCentredString(x, y - 3, label)
+
+
+def page_113(c):
+    """Lesson 17 Application Problem: draw place value disks.
+    Original: 10 tens, 10 hundreds, 13 tens, 13 hundreds, 13 tens 8 ones, 13 hundreds 8 tens 7 ones"""
+    y = header(c, "Lesson 17 Application Problem")
+    teks(c, y, "TEKS 3.2A")
+    y = helper_box(c, MARGIN, y, W - 2 * MARGIN, "Word Helper", [
+        [("10 ones", True), (" = 1 ten      ", False), ("10 tens", True), (" = 1 hundred      ", False),
+         ("10 hundreds", True), (" = 1 thousand", False)],
+        [("Draw a circle for each disk. Write 1, 10, or 100 inside.", False)],
+    ])
+    y -= 22
+    rich_line(c, MARGIN, y, [("Draw place value disks in the chart. Then fill in the blanks.", False)], 13)
+
+    items = [
+        ("10 tens", "10 tens = ___ hundred = ___", True),
+        ("10 hundreds", "10 hundreds = ___ thousand = ___", False),
+        ("12 tens", "12 tens = ___ hundred|___ tens = ___", False),
+        ("12 hundreds", "12 hundreds = ___ thousand|___ hundreds = ___", False),
+        ("12 tens 3 ones", "12 tens 3 ones = ___", False),
+        ("11 hundreds 2 tens 4 ones", "11 hundreds 2 tens 4 ones = ___", False),
+    ]
+    top, bottom = y - 12, 80
+    cw, ch = (W - 2 * MARGIN) / 2, (top - bottom) / 3
+    places = ["Thousands", "Hundreds", "Tens", "Ones"]
+    for i, (title, sentence, example) in enumerate(items):
+        col, row = i % 2, i // 2
+        x0, y0 = MARGIN + col * cw, top - row * ch
+        c.rect(x0, y0 - ch, cw, ch)
+        c.setFont("Sans-Bold", 13)
+        c.drawString(x0 + 10, y0 - 20, f"{'abcdef'[i]}.  {title}")
+        # labeled chart
+        gx, gy, gw, gh = x0 + 10, y0 - 30, cw - 20, ch - 82
+        pw = gw / 4
+        c.rect(gx, gy - gh, gw, gh)
+        for k in range(1, 4):
+            c.line(gx + k * pw, gy, gx + k * pw, gy - gh)
+        c.line(gx, gy - 14, gx + gw, gy - 14)
+        for k, p in enumerate(places):
+            c.setFont("Sans-Bold", 7.5)
+            c.drawCentredString(gx + (k + 0.5) * pw, gy - 10, p)
+        if example:
+            # 10 ten-disks in the tens column, circled, arrow to 1 hundred
+            tx = gx + 2.5 * pw
+            for d in range(10):
+                disk(c, tx - 13 + (d % 2) * 26, gy - 26 - (d // 2) * 15, "10", r=7)
+            hx = gx + 1.5 * pw
+            c.setStrokeColor(HELP_LINE)
+            c.line(tx - 26, gy - 50, hx + 12, gy - 50)
+            c.line(hx + 12, gy - 50, hx + 18, gy - 46)
+            c.line(hx + 12, gy - 50, hx + 18, gy - 54)
+            c.setStrokeColor(black)
+            disk(c, hx, gy - 50, "100", r=10)
+        # number sentence with blanks
+        rows = sentence.split("|")
+        sy = y0 - ch + 14 + 16 * (len(rows) - 1)
+        for k, row_txt in enumerate(rows):
+            parts = row_txt.split("___")
+            x = x0 + 10 + (20 if k else 0)
+            for j, part in enumerate(parts):
+                x = rich_line(c, x, sy, [(part, True)], 10.5)
+                if j < len(parts) - 1:
+                    x = blank(c, x + 2, sy, 34) + 2
+            sy -= 16
+        if example:
+            c.setFont("Sans", 8)
+            c.setFillColor(HexColor("#666666"))
+            c.drawRightString(x0 + cw - 8, y0 - 20, "(Example)")
+            c.setFillColor(black)
+
+    footer(c, 17, "Round to the nearest hundred on the vertical number line.", 113)
+
+
+PAGES = [page_93, page_95, page_109, page_110, page_111, page_113]
 
 
 def main(out="G3_M2_Modified.pdf"):
