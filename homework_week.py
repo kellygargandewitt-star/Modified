@@ -1,9 +1,9 @@
 """Simplified homework for the week: Lessons 8, 14-18 (book homework pages 34-80).
 
 Readiness focus: 3.2D (compare/order) and 3.4A (add). Rounding (3.4B) is kept
-at the teacher's request but made visual with a "rounding hill":
-numbers on the left side roll back to the lower ten/hundred, numbers at or
-past the top roll forward. Dial and beaker readings are given as numbers.
+at the teacher's request but made visual with a vertical number line
+(low at the bottom, halfway in the middle, high at the top; below halfway rounds
+down, halfway or above rounds up). Dial and beaker readings are given as numbers.
 2-4 problems per page, plain layout, book page numbers kept.
 
 Run: python3 homework_week.py  ->  writes G3_M2_Homework_Simplified.pdf
@@ -24,7 +24,7 @@ L16 = (16, "Round two- and three-digit numbers to the nearest ten on the vertica
 L17 = (17, "Round to the nearest hundred on the vertical number line.")
 L18 = (18, "Round four- and five-digit numbers using the vertical number line.")
 
-HILL_TIP = "Find the number on the hill. Left side: roll back. Top or right side: roll forward."
+HILL_TIP = "Put a dot on the line. Below halfway: round down. Halfway or above: round up."
 
 
 def start(c, title, teks_label, tip):
@@ -46,56 +46,50 @@ def fmt(v):
     return f"{v:,}"
 
 
-def hill(c, x0, y, w, low, step, labels=None, h=None):
-    """Rounding hill: a curve from low (left) up to halfway (top) and down to low+step (right).
-    labels: optional list of 3 strings for left / middle / right."""
-    h = h or min(w * 0.32, 62)
-    pts = []
-    for k in range(41):
-        t = k / 40
-        pts.append((x0 + t * w, y + h * (1 - (2 * t - 1) ** 2)))
+def vnum(c, x, top, bottom, low, step, labels=None, hints=True):
+    """Vertical rounding number line: low at the bottom, halfway in the middle, low+step at the top.
+    labels: optional (bottom, middle, top) strings, e.g. times."""
     c.setLineWidth(2)
-    p = c.beginPath()
-    p.moveTo(*pts[0])
-    for pt in pts[1:]:
-        p.lineTo(*pt)
-    c.drawPath(p, stroke=1, fill=0)
+    c.line(x, bottom - 12, x, top + 12)
+    for ye, d in ((top + 12, 1), (bottom - 12, -1)):
+        c.line(x, ye, x - 5, ye - 7 * d)
+        c.line(x, ye, x + 5, ye - 7 * d)
     c.setLineWidth(1)
-    c.line(x0 - 6, y, x0 + w + 6, y)
-    # 11 ticks along the hill
+    mid = (top + bottom) / 2
     for k in range(11):
-        t = k / 10
-        tx, ty = x0 + t * w, y + h * (1 - (2 * t - 1) ** 2)
-        c.circle(tx, ty, 2, stroke=0, fill=1)
+        ty = bottom + k * (top - bottom) / 10
+        big = k in (0, 5, 10)
+        c.line(x - (9 if big else 4), ty, x + (9 if big else 4), ty)
         lab = fmt(low + step * k // 10)
-        if k not in (0, 5, 10) and len(lab) <= 3 and w / 10 >= 18:
+        if not big and labels is None and len(lab) <= 3:
             c.setFont("Sans", 7)
             c.setFillColor(GREY)
-            c.drawCentredString(tx, ty + 6, lab)
+            c.drawString(x + 8, ty - 2.5, lab)
             c.setFillColor(black)
-    left, mid, right = labels or (fmt(low), fmt(low + step // 2), fmt(low + step))
+    lo_l, mid_l, hi_l = labels or (fmt(low), fmt(low + step // 2), fmt(low + step))
     c.setFont("Sans-Bold", 12)
-    c.drawCentredString(x0, y - 16, left)
-    c.drawCentredString(x0 + w, y - 16, right)
-    c.drawCentredString(x0 + w / 2, y + h + 8, mid)
-    if w >= 150:
-        c.setFont("Sans", 8)
-        c.setFillColor(GREY)
-        c.drawCentredString(x0 + w * 0.22, y - 28, "← roll back")
-        c.drawCentredString(x0 + w * 0.78, y - 28, "roll forward →")
-        c.setFillColor(black)
+    c.drawString(x + 13, bottom - 4, lo_l)
+    c.drawString(x + 13, mid - 4, mid_l)
+    c.drawString(x + 13, top - 4, hi_l)
+    c.setFont("Sans", 8)
+    c.setFillColor(GREY)
+    c.drawRightString(x - 12, mid - 3, "halfway")
+    if hints:
+        c.drawRightString(x - 12, (mid + top) / 2 - 3, "round up \u2191")
+        c.drawRightString(x - 12, (mid + bottom) / 2 - 3, "round down \u2193")
+    c.setFillColor(black)
 
 
 def hill_item(c, x, y, w, label, n, low, step, unit="", labels=None):
-    """Label, the hill, then 'n ≈ ___ unit'."""
-    rich_line(c, x, y, [(f"{label}  ", True), (f"{n if isinstance(n, str) else fmt(n)}", True)], 15)
-    hw = min(w - 70, 300)
-    hill(c, x + 30, y - 100, hw, low, step, labels)
-    s = f"{n if isinstance(n, str) else fmt(n)} ≈ |______" + (f"  {unit}" if unit else "")
-    sentence(c, x + 4, y - 150, s, size=14, wide_w=64)
+    """Label, the vertical number line, then 'n ≈ ___ unit'."""
+    shown = n if isinstance(n, str) else fmt(n)
+    rich_line(c, x, y, [(f"{label}  ", True), (shown, True)], 15)
+    vnum(c, x + 72, y - 30, y - 140, low, step, labels)
+    s = f"{shown} ≈ |______" + (f"  {unit}" if unit else "")
+    sentence(c, x + 4, y - 176, s, size=14, wide_w=64)
 
 
-def hill_grid(c, y, items, cols=2, row_h=190):
+def hill_grid(c, y, items, cols=2, row_h=205):
     cw = (W - 2 * MARGIN) / cols
     for i, it in enumerate(items):
         x0, y0 = MARGIN + (i % cols) * cw, y - (i // cols) * row_h
@@ -171,20 +165,20 @@ def page_67(c):
     y = text(c, y, "1.", [[("Round each length to the nearest ", False), ("10 cm", True), (".", False)]])
     hill_grid(c, y - 10, [("a. Desk length", 66, 60, 10, "cm"), ("b. Desk width", 48, 40, 10, "cm"),
                           ("c. Door width", 81, 80, 10, "cm")], cols=3)
-    y -= 230
+    y -= 240
     y = text(c, y, "2.", [[("Gym class ends at ", False), ("10:27", True), (". Round to the nearest ", False),
                           ("10 minutes", True), (".", False)]])
-    hill(c, MARGIN + 80, y - 120, 300, 20, 10, labels=("10:20", "10:25", "10:30"))
-    sentence(c, MARGIN + 30, y - 170, "Gym ends at about  |______|  a.m.", size=15, wide_w=80)
+    vnum(c, MARGIN + 110, y - 20, y - 140, 20, 10, labels=("10:20", "10:25", "10:30"))
+    sentence(c, MARGIN + 230, y - 84, "Gym ends at about  |______|  a.m.", size=15, wide_w=80)
     footer(c, *L15, 67)
 
 
 def page_68(c):
     y = start(c, "Lesson 15 Homework", "TEKS 3.4B", HILL_TIP)
     y = text(c, y, "", [[("Round each to the nearest ", False), ("10", True), (".", False)]])
-    hill_grid(c, y - 10, [("3. Water in the beaker:", 23, 20, 10, "mL"),
-                          ("4. The dog weighs:", 47, 40, 10, "pounds"),
-                          ("5. The apples weigh:", 57, 50, 10, "ounces")], cols=1, row_h=180)
+    hill_grid(c, y - 10, [("3. Water:", 23, 20, 10, "mL"),
+                          ("4. Dog:", 47, 40, 10, "lb"),
+                          ("5. Apples:", 57, 50, 10, "oz")], cols=3)
     footer(c, *L15, 68)
 
 
@@ -202,13 +196,13 @@ def page_72(c):
     y = start(c, "Lesson 16 Homework", "TEKS 3.4B, 3.4A", HILL_TIP)
     y = text(c, y, "2.", [[("Round each weight to the nearest ", False), ("10 ounces", True), (".", False)]])
     hill_grid(c, y - 10, [("a. Oranges", 45, 40, 10, "oz"), ("b. Apples", 672, 670, 10, "oz")], cols=2)
-    y -= 220
+    y -= 225
     y = text(c, y, "3.", [[("One water bottle holds ", False), ("17", True), (" fluid ounces. How much do ", False),
                           ("2", True), (" bottles hold?", False)]])
     sentence(c, MARGIN + 30, y - 20, "17 + 17 = |______|  fluid ounces", size=16, wide_w=70)
     rich_line(c, MARGIN + 30, y - 60, [("Now round your answer to the nearest 10:", False)], 13)
-    hill(c, MARGIN + 80, y - 180, 300, 30, 10)
-    sentence(c, MARGIN + 30, y - 226, "______|  ≈  |______|  fluid ounces", size=15, wide_w=70)
+    vnum(c, MARGIN + 110, y - 90, y - 200, 30, 10)
+    sentence(c, MARGIN + 230, y - 150, "______|  ≈  |______|  fluid ounces", size=15, wide_w=70)
     footer(c, *L16, 72)
 
 
@@ -227,7 +221,7 @@ def page_76(c):
     y = text(c, y, "2.", [[("Round each to the nearest ", False), ("hundred", True), (".", False)]])
     hill_grid(c, y - 10, [("a. Cards", 217, 200, 100), ("b. People", 462, 400, 100),
                           ("c. Juice", 386, 300, 100, "mL")], cols=3)
-    y -= 240
+    y -= 250
     y = text(c, y, "3.", [[("Circle the numbers that round to ", False), ("400", True), (".", False)]])
     zone_line(c, y - 40, 300, 500, 50, (350, 450), "these round to 400")
     c.setFont("Sans-Bold", 18)
@@ -256,9 +250,10 @@ def page_80(c):
     y -= 140
     y = text(c, y, "3.", [[("Saturday: ", False), ("4,519", True), (" fans.  Sunday: ", False), ("4,572", True), (" fans.", False)],
                          [("Which day had about ", False), ("4,600", True), (" fans?", False)]])
-    hill(c, MARGIN + 80, y - 100, 300, 4500, 100)
-    sentence(c, MARGIN + 30, y - 150, "4,519 ≈ |______|      4,572 ≈ |______", size=14, wide_w=64)
-    rich_line(c, MARGIN + 30, y - 180, [("Circle:  ", False), ("Saturday    Sunday", True)], 14)
+    vnum(c, MARGIN + 110, y - 20, y - 140, 4500, 100)
+    sentence(c, MARGIN + 230, y - 50, "4,519 ≈ |______", size=14, wide_w=64)
+    sentence(c, MARGIN + 230, y - 84, "4,572 ≈ |______", size=14, wide_w=64)
+    rich_line(c, MARGIN + 230, y - 120, [("Circle:  ", False), ("Saturday    Sunday", True)], 14)
     y -= 220
     y = text(c, y, "4.", [[("Round ", False), ("4,358", True), (" two ways.", False)]])
     sentence(c, MARGIN + 30, y - 20, "Nearest hundred:  |______          Nearest ten:  |______", size=14, wide_w=64)
