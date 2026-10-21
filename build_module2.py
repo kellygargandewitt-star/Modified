@@ -34,7 +34,7 @@ def rich_line(c, x, y, parts, size):
     return x
 
 
-def header(c, title, suffix=" (Modified)"):
+def header(c, title, suffix=" (Modified)", unit="3 • 2"):
     top = H - 40
     c.setFillColor(DARK)
     c.rect(MARGIN, top - 22, 240, 22, stroke=0, fill=1)
@@ -45,7 +45,7 @@ def header(c, title, suffix=" (Modified)"):
     c.setFillColor(white)
     c.setFont("Sans-Bold", 10)
     c.drawString(MARGIN + 8, top - 15, "BLUEBONNET LEARNING K–5 MATH")
-    c.drawCentredString(W - MARGIN - 21, top - 16, "3 • 2")
+    c.drawCentredString(W - MARGIN - 21, top - 16, unit)
     c.setFillColor(black)
     c.setFont("Sans-Bold", 9)
     c.drawRightString(W - MARGIN - 52, top - 15, title + suffix)
