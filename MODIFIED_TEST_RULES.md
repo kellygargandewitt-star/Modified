@@ -17,3 +17,10 @@ Use these rules for every modified test and check. The code lives in `modified_t
 - About one short line of words. The picture tells the story.
 - The picture is partly filled in, and students do one small fill-in before picking.
 - Bigger print (20–24 pt).
+
+## Standing plan for upcoming tests and checks
+For each test or check the teacher sends, make:
+1. **Computer Helper sheet.** For 3 students who take the test on the computer. Same pictures and steps, all 4 choices in screen order.
+2. **Simplified paper test.** For students needing more support, on paper only. 2 choices, one line of words, partly filled pictures.
+3. **Answer key** for both.
+The 3-choice Modified paper test is made only if asked.
