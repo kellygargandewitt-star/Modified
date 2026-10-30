@@ -11,3 +11,9 @@ Use these rules for every modified test and check. The code lives in `modified_t
 6. Paper test: 3 answer choices (remove the most obviously wrong one), with big lettered bubbles.
 7. Computer helper sheet: the same picture and step, with all 4 choices listed 1st–4th in the computer's order.
 8. Keep the original numbers and question numbers.
+
+## Simplified level (more support than Modified)
+- 2 answer choices: the correct answer and the closest wrong answer.
+- About one short line of words. The picture tells the story.
+- The picture is partly filled in, and students do one small fill-in before picking.
+- Bigger print (20–24 pt).

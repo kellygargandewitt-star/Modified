@@ -10,3 +10,11 @@ Q   PAPER (3 choices)              COMPUTER (4 choices, same order as screen)
 
 Choices removed on paper (most obviously wrong): Q1 9 - 3 = 6; Q2 "blue is 9 times as long as red";
 Q3 word bank replaced by 11 / 24 / 33; Q5 table 1-4, 3-6, 5-8, 7-10; Q6 "six times greater".
+
+SIMPLIFIED (paper, 2 choices) - G3_M3_TopicA_Check_Simplified.pdf
+1 B  9 x 3 = 27        (fill-in: 3 boxes)
+2 A  Red is 4 times    (fill-in: 4)
+3 B  24 cards          (fill-in: 24)
+4 B  4 times as many   (fill-in: 4)
+5 A  (3 -> 9 table)
+6 B  1,000 times greater
