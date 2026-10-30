@@ -1,0 +1,12 @@
+GRADE 3 MODULE 3 TOPIC A PROGRESS CHECK - MODIFIED (paper) + COMPUTER HELPER - ANSWER KEY
+
+Q   PAPER (3 choices)              COMPUTER (4 choices, same order as screen)
+1   C  9 x 3 = 27                  4th  9 x 3 = 27
+2   B  Red is 4 times as long      2nd  The red strip is 4 times as long as the blue strip
+3   B  24 cards                    Box 1 Jin, Box 2 Toni, Box 3 = 8, Boxes 4/5/6 = 8 each
+4   B  4 times as many as          drop-down: "4 times as many"
+5   A  (3 -> 9 table)              1st table (2-6, 3-9, 6-18, 9-27)
+6   C  1,000 times greater         3rd  one thousand times greater
+
+Choices removed on paper (most obviously wrong): Q1 9 - 3 = 6; Q2 "blue is 9 times as long as red";
+Q3 word bank replaced by 11 / 24 / 33; Q5 table 1-4, 3-6, 5-8, 7-10; Q6 "six times greater".
