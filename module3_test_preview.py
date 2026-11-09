@@ -35,6 +35,8 @@ def style(size=12, leading=None, bold=False, color=black, align=0):
 class Page:
     """Draws one page top to bottom; y moves down as things are added."""
     counts = {True: 0, False: 0}
+    label = "GRADE 3 READING • MODULE 3"
+    foot = FOOT
 
     def __init__(self, c, title, name=True, teacher=False):
         Page.counts[teacher] += 1
@@ -47,7 +49,7 @@ class Page:
         c.rect(MARGIN + 252, top - 22, CW - 252, 22, stroke=0, fill=1)
         c.setFillColor(white)
         c.setFont("Sans-Bold", 10)
-        c.drawString(MARGIN + 8, top - 15, "GRADE 3 READING • MODULE 3")
+        c.drawString(MARGIN + 8, top - 15, self.label)
         c.setFillColor(black)
         c.setFont("Sans-Bold", 9.5)
         c.drawRightString(W - MARGIN - 8, top - 15, ("TEACHER • " if teacher else "") + title)
@@ -165,7 +167,7 @@ class Page:
         c.setLineWidth(1)
         c.setStrokeColor(black)
         c.setFont("Sans-Bold", 9)
-        c.drawString(MARGIN, 44, FOOT)
+        c.drawString(MARGIN, 44, self.foot)
         c.setFont("Sans-Bold", 14)
         c.drawCentredString(W / 2, 22, f"Page {self.no}")
 
