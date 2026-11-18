@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sam the Spider Level 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; background:#fff; font-family:'Andika', sans-serif; color:#1f1f1f; }
+  #page { width:1300px; padding:10px; background:#fff; position:relative; }
+  .grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; }
+  .panel { border:3px solid #2b2b2b; background:#fff; display:flex; flex-direction:column; }
+  .panel svg { display:block; width:100%; height:auto; border-bottom:3px solid #2b2b2b; }
+  .panel.title svg { border-bottom:none; height:100%; }
+  .cap { height:84px; display:flex; align-items:center; justify-content:center; text-align:center;
+         font-size:21px; line-height:1.2; padding:4px 10px; text-wrap:balance; }
+  .strip { display:grid; grid-template-columns:230px 1fr; gap:10px; margin-top:14px; }
+  .wordbox { border:2px dashed #555; padding:10px 12px; text-align:center; display:flex; flex-direction:column; justify-content:center; }
+  .wordbox h2 { margin:0; font-size:27px; line-height:1.1; }
+  .wordbox .list { font-size:17px; line-height:1.55; margin-top:4px; }
+  .cards { display:grid; grid-template-columns:repeat(7, 1fr); border:2px dashed #555; }
+  .card { border:1px dashed #888; display:flex; flex-direction:column; align-items:center; padding:4px 2px 6px; }
+  .card svg { width:100%; height:auto; display:block; }
+  .card span { font-size:23px; line-height:1; margin-top:2px; }
+  #questions { width:1300px; padding:6px 14px 0; font-size:32px; line-height:1.4; }
+  #questions h3 { margin:0 0 2px; font-size:36px; }
+  #questions ol { margin:0; padding-left:56px; }
+  .lvl { position:absolute; right:22px; bottom:2px; font-size:22px; color:#555; }
+  @page { size: letter; margin: 0.5in; }
+  @media print { body { zoom: 0.5538; } }
+</style>
+<script src="art.js"></script>
+</head>
+<body>
+<div id="page">
+  <div class="grid" id="grid"></div>
+  <div class="strip">
+    <div class="wordbox">
+      <h2>CVC Words<br>to Find</h2>
+      <div id="wbicon"></div>
+      <div class="list">Sam • web • can • big<br>not • sat • sad • got<br>bit • did • Mom<br>hug • pal • his</div>
+    </div>
+    <div class="cards" id="cards"></div>
+  </div>
+</div>
+<div id="questions">
+  <h3>Think About the Story</h3>
+  <ol>
+    <li>Who is the story about?</li>
+    <li>Why did Sam want to spin a web?</li>
+    <li>How did Will help Sam?</li>
+    <li>How did Mom feel about the web?</li>
+    <li>What is the lesson of the story?</li>
+  </ol>
+</div>
+<script>
+const panels = [
+  ['title', null],
+  ['spin',        'Sam is a spider. Sam can spin a web.'],
+  ['planCake',    'It is Mom’s big day. Sam has a plan. He will spin a web for Mom.'],
+  ['bent',        'Sam spun a web. The web was bent.'],
+  ['small',       'Sam spun a web. It was not big.'],
+  ['mess',        'Sam spun a web. It was a big mess!'],
+  ['quit',        '“I quit!” said Sam. He sat on a twig. He was sad.'],
+  ['willArrives', 'His pal, Will the Worm, came by. “Are you sad, Sam?” said Will.'],
+  ['talk',        '“Do not fret, Sam,” said Will. “Mom will love it! Mom loves you!”'],
+  ['loveSpin',    'Sam got up. He spun a web. He spun “I LOVE YOU” in it.'],
+  ['flaw',        'The web was a bit bent. The E was like an F! But Sam did his best.'],
+  ['hug',         'Mom gave Sam a big hug. “I love it!” she said. Sam was glad!'],
+];
+const grid = document.getElementById('grid');
+panels.forEach(([scene, text], i) => {
+  const d = document.createElement('div');
+  d.className = 'panel' + (text ? '' : ' title');
+  d.innerHTML = panelSVG(S[scene]('L1p'+i), i) + (text ? `<div class="cap">${text}</div>` : '');
+  grid.appendChild(d);
+});
+const cards = [
+  ['Sam', ()=> spider({x:75,y:52,s:0.5,mood:'happy'})],
+  ['Mom', ()=> spider({x:75,y:52,s:0.5,color:C.mom,bow:true,lashes:true,mood:'happy'})],
+  ['pal', ()=> worm({x:70,y:72,s:0.6,mood:'happy'})],
+  ['web', ()=> web(75,50,46,{spokes:10,rings:5})],
+  ['twig', ()=> `<path d="M10 70 Q 75 58 140 40" stroke="${C.bark}" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M80 60 Q 88 40 104 34" stroke="${C.bark}" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="106" cy="32" rx="10" ry="5" fill="#6fbf5a" stroke="#4e9a3a" stroke-width="1.2"/><ellipse cx="40" cy="58" rx="10" ry="5" fill="#6fbf5a" stroke="#4e9a3a" stroke-width="1.2" transform="rotate(-20 40 58)"/>`],
+  ['sat', ()=> `<path d="M0 84 Q 75 78 150 70" stroke="${C.bark}" stroke-width="12" fill="none"/>` + spider({x:72,y:56,s:0.36,mood:'happy',legs:POSE.sit})],
+  ['sad', ()=> spider({x:75,y:52,s:0.5,mood:'sad',tear:true})],
+  ['bent', ()=> crookedWeb(75,52,48,21)],
+  ['big', ()=> spider({x:58,y:50,s:0.5,mood:'happy'}) + spider({x:122,y:76,s:0.18,mood:'happy'})],
+  ['mess', ()=> messyWeb(75,50,110,74,26,5)],
+  ['spin', ()=> web(52,58,36,{spokes:10,rings:5,partial:3}) + `<line x1="52" y1="58" x2="112" y2="52" stroke="#7d8a97" stroke-width="1.5"/>` + spider({x:118,y:50,s:0.3,mood:'happy',thread:0})],
+  ['up', ()=> spider({x:64,y:58,s:0.42,mood:'happy',look:[2,-4]}) + `<path d="M124 86 L124 22 M110 38 L124 20 L138 38" stroke="#2b2b2b" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`],
+  ['hug', ()=> spider({x:92,y:50,s:0.44,color:C.mom,bow:true,eyes:'closed',legs:{l0:null,l1:null}}) + spider({x:60,y:64,s:0.32,eyes:'closed'}) + `<path d="M78 56 Q 70 86 50 74" stroke="${C.mom}" stroke-width="4" fill="none" stroke-linecap="round"/>` + heart(118,18,1)],
+  ['glad', ()=> spider({x:75,y:56,s:0.48,mood:'grin',eyes:'closed',legs:POSE.armsUp}) + sparkle(22,24,0.9) + sparkle(130,26,0.9)],
+];
+const cardsEl = document.getElementById('cards');
+cards.forEach(([w,fn],i)=>{
+  const d = document.createElement('div'); d.className='card';
+  d.innerHTML = iconSVG(fn(), i) + `<span>${w}</span>`;
+  cardsEl.appendChild(d);
+});
+document.getElementById('wbicon').innerHTML = `<svg viewBox="0 0 120 70" width="90" height="52">${spider({x:60,y:44,s:0.28,thread:0,mood:'happy'})}</svg>`;
+document.getElementById('page').insertAdjacentHTML('beforeend','<div class="lvl">★</div>');
+if (location.hash === '#coloring') applyColoring('#page svg');
+</script>
+</body>
+</html>

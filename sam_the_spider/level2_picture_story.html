@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sam the Spider Level 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; background:#fff; font-family:'Andika', sans-serif; color:#1f1f1f; }
+  @page { size: letter; margin: 0.5in; }
+  .sheet { width:720px; height:956px; position:relative; overflow:hidden; break-after:page; }
+  .sheet:last-child { break-after:auto; }
+  header { display:flex; align-items:center; justify-content:space-between; height:58px; margin-bottom:8px; border-bottom:3px solid #2b2b2b; }
+  header h1 { margin:0; font-size:36px; line-height:1; display:flex; align-items:center; gap:8px; }
+  header .name { font-size:17px; }
+  .lvl { font-size:18px; color:#555; position:absolute; right:0; bottom:0; }
+  .grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:9px; }
+  .panel { border:2.5px solid #2b2b2b; display:flex; flex-direction:column; }
+  .panel svg { display:block; width:100%; height:auto; border-bottom:2.5px solid #2b2b2b; }
+  .cap { height:122px; display:flex; align-items:center; justify-content:center; text-align:center;
+         font-size:18.5px; line-height:1.28; padding:4px 8px; text-wrap:balance; }
+  .num { position:absolute; margin:4px 0 0 4px; width:22px; height:22px; border-radius:50%; background:#fff; border:2px solid #2b2b2b; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .panelwrap { position:relative; }
+  h2 { font-size:24px; margin:16px 0 6px; }
+  .stretch { display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; }
+  .sw { border:2px dashed #555; border-radius:8px; text-align:center; padding:8px 4px; }
+  .sw b { display:block; font-size:24px; }
+  .sw span { font-size:18px; color:#333; letter-spacing:1px; }
+  ol.q { margin:0; padding-left:30px; font-size:19px; line-height:1.55; }
+  /* passage */
+  .passage { width:100%; border-collapse:collapse; font-size:19px; line-height:1.62; }
+  .passage td.c { width:48px; text-align:right; color:#555; font-size:15px; vertical-align:baseline; }
+  .tbl { width:100%; border-collapse:collapse; font-size:17px; margin-top:6px; }
+  .tbl th, .tbl td { border:2px solid #2b2b2b; padding:6px 8px; text-align:center; }
+  .tbl td.l { text-align:left; }
+  .howto { font-size:16.5px; line-height:1.45; margin:4px 0 0; padding-left:22px; }
+</style>
+<script src="art.js"></script>
+</head>
+<body>
+
+<div class="sheet" id="s1">
+  <header><h1><span id="hicon"></span>Sam the Spider</h1><div class="name">Name: ______________________</div></header>
+  <div class="grid" id="g1"></div>
+  <div class="lvl">★★</div>
+</div>
+
+<div class="sheet" id="s2">
+  <header><h1>Sam the Spider <span style="font-size:20px;font-weight:400">(page 2)</span></h1><div class="name">Name: ______________________</div></header>
+  <div class="grid" id="g2"></div>
+  <h2>Stretch Words: Chunk It!</h2>
+  <div class="stretch">
+    <div class="sw"><b>birthday</b><span>birth • day</span></div>
+    <div class="sw"><b>tangled</b><span>tan • gled</span></div>
+    <div class="sw"><b>perfect</b><span>per • fect</span></div>
+    <div class="sw"><b>okay</b><span>o • kay</span></div>
+  </div>
+  <h2 style="font-size:20px;margin:12px 0 6px">♡ Heart Words: these don’t follow the rules. Know them by heart!</h2>
+  <div class="stretch">
+    <div class="sw"><b>thought</b></div>
+    <div class="sw"><b>said</b></div>
+    <div class="sw"><b>what</b></div>
+    <div class="sw"><b>want</b></div>
+  </div>
+  <h2>Think About the Story</h2>
+  <ol class="q">
+    <li>Why did Sam want to spin a web?</li>
+    <li>What went wrong with Sam’s first three webs?</li>
+    <li>How did Will help Sam change his mind?</li>
+    <li>The web was not perfect. Why was it still the best gift?</li>
+    <li>What is the lesson of this story?</li>
+  </ol>
+  <div class="lvl">★★</div>
+</div>
+
+<div class="sheet" id="s3">
+  <header><h1 style="font-size:30px">Sam the Spider: 1-Minute Read</h1><div class="name">Name: ______________</div></header>
+  <table class="passage" id="passage"></table>
+  <h2 style="margin-top:10px">My 1-Minute Reads</h2>
+  <table class="tbl">
+    <tr><th></th><th>Date</th><th>Words I read<br>in 1 minute</th><th>Tricky words</th><th>Words correct</th></tr>
+    <tr><td class="l"><b>Try 1</b></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td class="l"><b>Try 2</b></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td class="l"><b>Try 3</b></td><td></td><td></td><td></td><td></td></tr>
+  </table>
+  <ol class="howto">
+    <li>Set a timer for 1 minute. Start reading at the top.</li>
+    <li>A grown-up lightly marks any tricky words. When the timer rings, mark where you stopped.</li>
+    <li>Use the number at the end of the line to count your words. Take away the tricky words.</li>
+  </ol>
+  <div class="lvl">★★</div>
+</div>
+
+<script>
+// One source of truth: the panels and the 1-minute passage use the same text.
+const STORY = [
+  ['climb',       'Sam the spider went up the tree. He had a plan. He will spin a web for his mom. It is her birthday!'],
+  ['bent',        'Sam spun and spun. The first web was bent.'],
+  ['small',       'The next web was too small.'],
+  ['mess',        'The last web got all tangled.'],
+  ['quit',        '“I quit!” said Sam. “I can not get it right.” He sat on a branch. He felt sad.'],
+  ['willArrives', 'Just then, his pal Will the Worm came by. “What is wrong, Sam?” he said.'],
+  ['tired',       '“I want to spin the best web for Mom,” said Sam. “But I can not do it. I am so tired.”'],
+  ['talk',        '“That is okay,” said Will. “Mom will love it. She loves you!”'],
+  ['think',       'Sam thought for a bit. “You are right! I will try one more time. Thanks, Will!”'],
+  ['loveSpin',    'Sam got up and spun a web. He spun “I LOVE YOU” in the web.'],
+  ['flaw',        'The web was a bit bent. The E in LOVE looked like an F. It was not perfect.'],
+  ['proud',       'Sam smiled at his web. It was the best gift for his mom!'],
+];
+function addPanels(el, from, to){
+  for (let i=from;i<to;i++){
+    const [scene, text] = STORY[i];
+    const d = document.createElement('div'); d.className='panel panelwrap';
+    d.innerHTML = `<div class="num">${i+1}</div>` + panelSVG(S[scene]('L2p'+i), i) + `<div class="cap">${text}</div>`;
+    el.appendChild(d);
+  }
+}
+addPanels(document.getElementById('g1'), 0, 9);
+addPanels(document.getElementById('g2'), 9, 12);
+document.getElementById('hicon').innerHTML = `<svg viewBox="0 0 80 60" width="62" height="46">${spider({x:40,y:34,s:0.3,thread:0,mood:'happy'})}</svg>`;
+
+// 1-minute passage: hand-broken lines with running word counts
+const LINES = [
+  'Sam the spider went up the tree. He had a plan.',
+  'He will spin a web for his mom. It is her birthday!',
+  'Sam spun and spun. The first web was bent.',
+  'The next web was too small. The last web got all tangled.',
+  '“I quit!” said Sam. “I can not get it right.”',
+  'He sat on a branch. He felt sad.',
+  'Just then, his pal Will the Worm came by.',
+  '“What is wrong, Sam?” he said.',
+  '“I want to spin the best web for Mom,” said Sam.',
+  '“But I can not do it. I am so tired.”',
+  '“That is okay,” said Will. “Mom will love it. She loves you!”',
+  'Sam thought for a bit. “You are right! I will try',
+  'one more time. Thanks, Will!”',
+  'Sam got up and spun a web. He spun “I LOVE YOU” in the web.',
+  'The web was a bit bent. The E in LOVE looked like an F.',
+  'It was not perfect.',
+  'Sam smiled at his web. It was the best gift for his mom!',
+];
+// guard: passage must match the panel text word for word
+const norm = t => t.replace(/\s+/g,' ').trim();
+if (norm(LINES.join(' ')) !== norm(STORY.map(s=>s[1]).join(' '))) document.body.insertAdjacentHTML('afterbegin','<h1 style="color:red">PASSAGE MISMATCH</h1>');
+let total = 0;
+document.getElementById('passage').innerHTML = LINES.map(l => { total += l.split(/\s+/).length; return `<tr><td>${l}</td><td class="c">${total}</td></tr>`; }).join('');
+
+if (location.hash === '#coloring') applyColoring('.sheet svg');
+</script>
+</body>
+</html>

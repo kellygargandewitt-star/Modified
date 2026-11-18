@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sam Word Warm-Up</title>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; background:#fff; font-family:'Andika', sans-serif; color:#111; }
+  @page { size: letter; margin: 0.5in; }
+  .sheet { width:720px; height:956px; position:relative; overflow:hidden; break-after:page; }
+  .sheet:last-child { break-after:auto; }
+  header { display:flex; align-items:center; justify-content:space-between; height:56px; border-bottom:3px solid #111; margin-bottom:8px; }
+  header h1 { margin:0; font-size:34px; display:flex; align-items:center; gap:8px; }
+  header .name { font-size:17px; }
+  .lead { font-size:17px; margin:4px 0 10px; }
+  /* word pyramid */
+  .pyr { display:flex; flex-direction:column; align-items:center; gap:7px; }
+  .row { display:flex; align-items:center; gap:10px; }
+  .step { border:2.5px solid #111; border-radius:10px; padding:5px 14px; display:flex; gap:18px; justify-content:center; font-size:22px; white-space:nowrap; }
+  .step .w b { font-weight:400; color:#999; padding:0 1px; }
+  .tag { font-size:13.5px; font-weight:700; text-align:center; line-height:1.15; }
+  .rowwrap { display:grid; grid-template-columns:84px 506px 110px; align-items:center; gap:10px; width:100%; }
+  .checks { display:flex; gap:4px; }
+  .checks span { width:24px; height:24px; border:2px solid #111; border-radius:4px; font-size:10px; display:flex; align-items:flex-end; justify-content:center; line-height:1; padding-bottom:1px; }
+  .dayhead { display:grid; grid-template-columns:84px 506px 110px; gap:10px; width:100%; }
+  .dayhead div:last-child { display:flex; gap:4px; font-size:11px; font-weight:700; }
+  .dayhead div:last-child span { width:24px; text-align:center; }
+  h2 { font-size:24px; margin:16px 0 4px; }
+  .phr { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; }
+  .pp { border:2.5px dashed #111; border-radius:10px; padding:10px 6px; text-align:center; font-size:18px; line-height:1.65; }
+  .pp div:nth-child(1) { font-size:21px; }
+  .stuck { margin-top:18px; border:3px solid #111; border-radius:12px; padding:10px 12px; }
+  .st-h { font-size:21px; font-weight:700; text-align:center; margin-bottom:8px; }
+  .st-g { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; text-align:center; font-size:17px; line-height:1.3; }
+  .st-g b { display:block; margin:0 auto 4px; width:30px; height:30px; border-radius:50%; border:2.5px solid #111; font-size:18px; line-height:25px; }
+  /* cards */
+  .cards { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:repeat(4, 1fr); height:830px; border:2px dashed #555; }
+  .card { border:1px dashed #777; padding:8px 10px; display:grid; grid-template-columns:132px 1fr; gap:10px; align-items:center; }
+  .card svg { width:132px; height:auto; }
+  .card .word { font-size:32px; font-weight:700; line-height:1; }
+  .card .syl { font-size:19px; letter-spacing:1px; margin:3px 0 6px; }
+  .card .mean { font-size:16px; line-height:1.3; }
+  .card .from { font-size:14px; font-style:italic; line-height:1.3; margin-top:6px; color:#333; }
+  .cut { font-size:14px; margin:0 0 4px; }
+</style>
+<script src="art.js"></script>
+</head>
+<body>
+
+<div class="sheet">
+  <header><h1><span class="hi"></span>Word Warm-Up</h1><div class="name">Name: ______________________</div></header>
+  <p class="lead">Read each step from the top down. Tap the sounds. Chunk the long words. Check a box when you can read the whole step smoothly.</p>
+  <div class="dayhead"><div></div><div></div><div><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span></div></div>
+  <div class="pyr" id="pyr"></div>
+  <h2>Phrase Pyramids: read it smoothly, like talking</h2>
+  <div class="phr">
+    <div class="pp"><div>web</div><div>a web</div><div>spun a web</div><div>Sam spun a web</div><div>Sam spun a web for Mom.</div></div>
+    <div class="pp"><div>tired</div><div>so tired</div><div>I am so tired.</div><div>“I am so tired,”</div><div>“I am so tired,” said Sam.</div></div>
+    <div class="pp"><div>perfect</div><div>not perfect</div><div>It was not perfect.</div><div>It was not perfect, but</div><div>it was the best gift.</div></div>
+  </div>
+  <div class="stuck">
+    <div class="st-h">Stuck on a word? Don’t give up, just like Sam!</div>
+    <div class="st-g">
+      <div><b>1</b>Tap the sounds.<br><i>s-a-d → sad</i></div>
+      <div><b>2</b>Find the vowel.<br><i>What sound?</i></div>
+      <div><b>3</b>Chunk it.<br><i>tan • gled</i></div>
+      <div><b>4</b>Reread the<br>sentence.</div>
+    </div>
+  </div>
+</div>
+
+<div class="sheet">
+  <header><h1><span class="hi"></span>Power Word Cards</h1><div class="name">Name: ______________________</div></header>
+  <p class="cut">✂ Cut out the cards. Read the word, clap the parts, and tell what it means. These words are in the big-kid story <i>Sammy the Spider</i>.</p>
+  <div class="cards" id="cards"></div>
+</div>
+
+<script>
+// ---- word pyramid: easiest at the top, hardest at the bottom ----
+const STEPS = [
+  ['Short vowel<br>words',      ['Sam','web','sad']],
+  ['More short<br>vowels',      ['hug','got','bit','Mom']],
+  ['Blends',                    ['spin','best','bent','felt']],
+  ['Digraphs<br>th • ch • sh',  ['then','thanks','much','wish']],
+  ['Endings',                   ['looked','smiled','asked','spinning']],
+  ['Chunk it!',                 ['birth|day','tan|gled','per|fect','some|thing']],
+  ['Power<br>words',            ['crook|ed','pon|dered','ex|haust|ed']],
+];
+const pyr = document.getElementById('pyr');
+const sep = w => w.split('|').join('<b>•</b>');
+pyr.innerHTML = STEPS.map(([tag, words]) => `
+  <div class="rowwrap">
+    <div class="tag">${tag}</div>
+    <div style="display:flex;justify-content:center"><div class="step">${words.map(w=>`<span class="w">${sep(w)}</span>`).join('')}</div></div>
+    <div class="checks"><span></span><span></span><span></span><span></span></div>
+  </div>`).join('');
+
+// ---- power word cards ----
+const CARDS = [
+  ['crooked', 'crook • ed', 'Not straight. Bent.', '“The web was too crooked.”', () => crookedWeb(75,52,48,21)],
+  ['tangled', 'tan • gled', 'Twisted and knotted together.', '“It got all tangled together.”', () => messyWeb(75,50,110,74,26,5)],
+  ['exhausted', 'ex • haust • ed', 'Very, very tired.', '“I have been trying all day and now I’m exhausted.”', () => spider({x:66,y:58,s:0.5,mood:'worried',eyes:'tired',look:[0,3]}) + zzz(104,30)],
+  ['pondered', 'pon • dered', 'Thought about something carefully.', '“Sammy pondered this for a moment.”', () => spider({x:52,y:64,s:0.42,mood:'smile',look:[3,-4]}) + bubble(112,26,26,20,82,50,`<text x="112" y="36" text-anchor="middle" font-family="Andika" font-weight="700" font-size="28" fill="#111">?</text>`)],
+  ['flaws', 'flaws', 'Small mistakes. Things that are not perfect.', '“It definitely had some flaws.”', () => loveWeb(75,52,48,{mark:true})],
+  ['perfect', 'per • fect', 'With no mistakes at all.', '“I’ll never make the perfect web.”', () => web(66,52,46,{spokes:12,rings:6}) + sparkle(130,22,1.2)],
+  ['beautiful', 'beau • ti • ful', 'Very pretty. Nice to look at.', '“…spin a beautiful web for his mother.”', () => web(75,52,44,{spokes:12,rings:6}) + flower(22,80) + flower(128,80) + sparkle(130,18,1) + sparkle(20,18,1)],
+  ['special', 'spe • cial', 'Not like the others. Extra nice.', '“…make her something special.”', () => cake(75,64,0.85)],
+];
+document.getElementById('cards').innerHTML = CARDS.map(([w,syl,mean,from,art],i) => `
+  <div class="card">${iconSVG(art(), i)}
+    <div><div class="word">${w}</div><div class="syl">${syl}</div><div class="mean">${mean}</div><div class="from">${from}</div></div>
+  </div>`).join('');
+document.querySelectorAll('.hi').forEach(e => e.innerHTML = `<svg viewBox="0 0 80 60" width="58" height="44">${spider({x:40,y:34,s:0.3,thread:0,mood:'happy'})}</svg>`);
+applyColoring('svg');   // always black and white
+</script>
+</body>
+</html>
