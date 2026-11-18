@@ -121,7 +121,7 @@ function bubble(x,y,rx,ry,tailX,tailY,inner=''){
 function speech(x,y,rx,ry,tx,ty,inner=''){
   return `<g><path d="M${x-10} ${y+ry-4} L ${tx} ${ty} L ${x+8} ${y+ry-2} Z" fill="#fff" stroke="#333" stroke-width="2.5" stroke-linejoin="round"/>
     <ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#fff" stroke="#333" stroke-width="2.5"/>
-    <rect x="${x-14}" y="${y+ry-8}" width="24" height="7" fill="#fff"/>${inner}</g>`;
+    <rect x="${x-14}" y="${y+ry-8}" width="24" height="7" fill="#fff" stroke="none"/>${inner}</g>`;
 }
 
 // ---------- webs ----------
@@ -441,6 +441,39 @@ cards.forEach(([w,fn],i)=>{
   cardsEl.appendChild(d);
 });
 document.getElementById('wbicon').innerHTML = `<svg viewBox="0 0 120 70" width="90" height="52">${spider({x:60,y:44,s:0.28,thread:0,mood:'happy'})}</svg>`;
+// ---------- coloring-page mode: open with #coloring ----------
+if (location.hash === '#coloring') {
+  document.title = 'Sam the Spider Coloring Page';
+  const NS = 'http://www.w3.org/2000/svg';
+  const els = [...document.querySelectorAll('#page svg *')].filter(e => !e.closest('clipPath,defs'));
+  for (const e of els) {
+    const tag = e.tagName;
+    if (tag === 'g') { if (e.getAttribute('fill')) e.remove(); continue; } // clouds
+    const op = e.getAttribute('opacity');
+    if (op && parseFloat(op) < 1) { e.remove(); continue; }               // shine + cheeks
+    const fill = e.getAttribute('fill'), stroke = e.getAttribute('stroke');
+    const sw = parseFloat(e.getAttribute('stroke-width') || '1');
+    if (tag === 'text') { e.setAttribute('fill','#fff'); e.setAttribute('stroke','#000'); e.setAttribute('stroke-width','1.8'); continue; }
+    if (fill && fill !== 'none') {
+      if (fill.startsWith('url')) { e.setAttribute('fill','#fff'); continue; }  // sky
+      if (fill === '#111' || fill === '#000') continue;                          // pupils
+      e.setAttribute('fill','#fff');
+      const tiny = tag === 'circle' && parseFloat(e.getAttribute('r')) <= 2.5;
+      if (!stroke && !tiny) { e.setAttribute('stroke','#000'); e.setAttribute('stroke-width','1.5'); }
+    }
+    if (stroke && stroke !== 'none') {
+      if ((!fill || fill === 'none') && sw >= 4.5 && (tag === 'path' || tag === 'line')) {
+        const c = e.cloneNode(); c.setAttribute('stroke','#000'); c.setAttribute('stroke-width', sw + 3);
+        e.parentNode.insertBefore(c, e);
+        e.setAttribute('stroke','#fff'); e.setAttribute('stroke-width', Math.max(sw - 1.5, 2.5));
+      } else {
+        const isWeb = ['#9aa7b4','#a7b4c0','#7d8a97','#555'].includes(stroke);
+        e.setAttribute('stroke', isWeb ? '#333' : '#000');
+        if (isWeb) e.setAttribute('stroke-width', Math.min(sw, 0.9));
+      }
+    }
+  }
+}
 </script>
 </body>
 </html>
