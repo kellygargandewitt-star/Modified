@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home Packet</title>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; background:#fff; font-family:'Andika', sans-serif; color:#111; }
+  @page { size: letter; margin: 0.5in; }
+  .sheet { width:720px; height:956px; position:relative; overflow:hidden; break-after:page; }
+  .sheet:last-child { break-after:auto; }
+  header { display:flex; align-items:center; justify-content:space-between; height:56px; border-bottom:3px solid #111; margin-bottom:10px; }
+  header h1 { margin:0; font-size:32px; display:flex; align-items:center; gap:8px; }
+  header .name { font-size:17px; }
+  p, li { font-size:16.5px; line-height:1.45; }
+  p { margin:6px 0; }
+  h2 { font-size:21px; margin:14px 0 4px; }
+  ul, ol { margin:4px 0; padding-left:24px; }
+  .box { border:2.5px solid #111; border-radius:10px; padding:8px 14px; margin-top:10px; }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .say { font-style:italic; }
+  table { width:100%; border-collapse:collapse; }
+  .plan th, .plan td { border:2px solid #111; padding:6px 7px; vertical-align:top; font-size:15px; line-height:1.3; }
+  .plan th { font-size:16px; background:#eee; }
+  .plan td.n { font-weight:700; font-size:17px; width:56px; text-align:center; }
+  .plan td.ok { width:64px; }
+  .cb { display:inline-block; width:15px; height:15px; border:2px solid #111; border-radius:3px; vertical-align:-2px; margin-right:5px; }
+  .log th, .log td { border:2px solid #111; padding:6px; font-size:15.5px; text-align:center; height:44px; }
+  .faces { font-size:22px; letter-spacing:8px; }
+  .lines div { border-bottom:1.5px solid #111; height:34px; }
+  .q { font-size:18px; font-weight:700; margin:12px 0 0; }
+  .draw { border:2.5px solid #111; height:200px; border-radius:8px; margin-top:6px; position:relative; }
+  .draw > span { position:absolute; left:10px; top:6px; font-size:15px; }
+  .sig { margin-top:12px; font-size:16px; }
+</style>
+<script src="../sam_the_spider/art.js"></script>
+<script src="kit.js"></script>
+</head>
+<body>
+
+<!-- 1. Family letter -->
+<div class="sheet">
+  <header><h1><span class="hi"></span><span><span class="ttl"></span>: Home Reading</span></h1></header>
+  <p>Dear Families,</p>
+  <p data-k="intro"></p>
+  <p>Please spend <b>10 to 15 minutes each night</b> on this packet. The plan on the next page tells you what to do each night. <b>It is okay if some words are hard.</b> A little struggle is how readers grow!</p>
+
+  <h2>When your child gets stuck on a word</h2>
+  <ol>
+    <li><b>Wait.</b> Count to 5 in your head before you help.</li>
+    <li>Say: <span class="say">“Tap the sounds.”</span> <span data-k="tap"></span></li>
+    <li>Say: <span class="say">“Find the vowel. What sound does it make?”</span></li>
+    <li>Say: <span class="say">“Cover part of the word. Read it in chunks.”</span> <span data-k="chunk"></span></li>
+    <li>Say: <span class="say">“Go back and read the whole sentence again.”</span></li>
+    <li>Still stuck? <b>Tell them the word</b>, then have them reread the sentence.</li>
+  </ol>
+
+  <div class="two">
+    <div class="box">
+      <h2 style="margin-top:0">Please do</h2>
+      <ul>
+        <li>Praise trying: <span class="say">“You kept going! That was hard and you did it.”</span></li>
+        <li>Let your child read to you, a pet, or a stuffed animal.</li>
+        <li>Use the pictures. They help!</li>
+        <li>Sign the reading log each night.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2 style="margin-top:0">Please don’t</h2>
+      <ul>
+        <li>Read the whole story for them.</li>
+        <li>Give the word right away.</li>
+        <li>Worry about speed on Nights 1 and 2. Smooth comes first, then fast.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>What is in this packet</h2>
+  <ul>
+    <li><b>Word Warm-Up</b>: a word pyramid and phrase pyramids</li>
+    <li><b>Story ★</b>: a short version (color the pictures!)</li>
+    <li><b>Story ★★</b>: a longer version of the same text, plus a 1-minute read page</li>
+    <li><b>Reading log, questions, and Power Word Cards</b> to cut out</li>
+  </ul>
+  <p class="sig">Please return this packet on: ______________________ &nbsp; Thank you! ______________________</p>
+</div>
+
+<!-- 2. Nightly plan -->
+<div class="sheet">
+  <header><h1><span class="hi"></span>Nightly Plan</h1><div class="name">Name: ______________________</div></header>
+  <p>Do one night at a time. Check each box when it is done. Each night takes about 10 to 15 minutes.</p>
+  <table class="plan">
+    <tr><th>Night</th><th style="width:150px">Warm up (2 min)</th><th style="width:262px">Read (8 to 10 min)</th><th>Finish</th><th>Grown-up</th></tr>
+    <tr><td class="n">1</td>
+      <td><span class="cb"></span>Word Warm-Up: read the first 3 steps of the pyramid.</td>
+      <td><span class="cb"></span>Read Story ★ <b>together</b>: you read a box, your child reads the next box.<br><span class="cb"></span>Your child reads Story ★ <b>alone</b>.</td>
+      <td><span class="cb"></span>Color 4 pictures in Story ★.</td><td class="ok"></td></tr>
+    <tr><td class="n">2</td>
+      <td><span class="cb"></span>Pyramid steps 1 to 5.<br><span class="cb"></span>Phrase Pyramid “web.”</td>
+      <td><span class="cb"></span><b>Echo read</b> Story ★★ boxes 1 to 6: you read one sentence, your child reads it back.<br><span class="cb"></span>Your child reads boxes 1 to 6 alone.</td>
+      <td><span class="cb"></span>Color 3 pictures in Story ★★.</td><td class="ok"></td></tr>
+    <tr><td class="n">3</td>
+      <td><span class="cb"></span>All pyramid steps.<br><span class="cb"></span>Phrase Pyramids “tired” and “perfect.”</td>
+      <td><span class="cb"></span>Echo read Story ★★ boxes 7 to 12.<br><span class="cb"></span>Your child reads <b>all</b> of Story ★★ alone. <span data-k="voices"></span></td>
+      <td><span class="cb"></span>Cut out the Power Word Cards. Read each word, clap its parts, and say what it means.</td><td class="ok"></td></tr>
+    <tr><td class="n">4</td>
+      <td><span class="cb"></span>All pyramid steps. Try to read them smoothly.</td>
+      <td><span class="cb"></span><b>1-Minute Reads</b>: on the 1-Minute Read page, read 3 times. Write each score.<br><span class="cb"></span>Color your bars on the graph.</td>
+      <td><span class="cb"></span>Answer the Think About the Story questions.</td><td class="ok"></td></tr>
+    <tr><td class="n">Bonus</td>
+      <td colspan="3"><span class="cb"></span><b>Show time!</b> Read Story ★★ out loud to someone in your family, with lots of expression. Ask them: <span class="say">“What was your favorite part?”</span></td><td class="ok"></td></tr>
+  </table>
+
+  <div class="box" style="margin-top:10px">
+    <h2 style="margin-top:0">How to do a 1-Minute Read (Night 4)</h2>
+    <ol>
+      <li>Set a timer for 1 minute. Your child starts at the top of the 1-Minute Read page.</li>
+      <li>Lightly mark in pencil any word your child misses or skips.</li>
+      <li>When the timer rings, mark the last word read. The number at the end of each line is the total words up to there. Count to the last word, then take away the missed words.</li>
+      <li>Write the score and read again. <b>Can they beat it?</b> Smooth and correct matter more than fast.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- 3. Reading log + graph -->
+<div class="sheet">
+  <header><h1><span class="hi"></span>My Reading Log</h1><div class="name">Name: ______________________</div></header>
+  <table class="log">
+    <tr><th>Night</th><th>What I read</th><th>Minutes</th><th>How did it go?<br>(circle one)</th><th>Grown-up sign</th></tr>
+    <tr><td><b>1</b></td><td></td><td></td><td class="faces">☺ ☹ ☹</td><td></td></tr>
+    <tr><td><b>2</b></td><td></td><td></td><td class="faces">☺ ☹ ☹</td><td></td></tr>
+    <tr><td><b>3</b></td><td></td><td></td><td class="faces">☺ ☹ ☹</td><td></td></tr>
+    <tr><td><b>4</b></td><td></td><td></td><td class="faces">☺ ☹ ☹</td><td></td></tr>
+  </table>
+  <h2 style="margin-top:18px">My 1-Minute Read Graph</h2>
+  <p>Color a bar up to the number of words you read correctly in 1 minute.</p>
+  <div id="graph"></div>
+</div>
+
+<!-- 4. Questions -->
+<div class="sheet">
+  <header><h1><span class="hi"></span>Think About the Story</h1><div class="name">Name: ______________________</div></header>
+  <p>Answer in full sentences. Look back at the story to find proof!</p>
+  <div id="hq"></div>
+  <div class="draw"><span><span data-k="draw"></span></span></div>
+</div>
+
+<script>
+renderHome(STORY);
+// face choices: happy, okay, hard (drawn as small svgs so they print the same everywhere)
+const face = m => `<svg viewBox="0 0 30 30" width="28" height="28" style="vertical-align:middle;margin:0 5px"><circle cx="15" cy="15" r="13" fill="#fff" stroke="#111" stroke-width="2"/><circle cx="10.5" cy="12" r="1.8"/><circle cx="19.5" cy="12" r="1.8"/>${
+  m==='h' ? '<path d="M9 18 Q15 24 21 18" stroke="#111" stroke-width="2" fill="none"/>' :
+  m==='o' ? '<path d="M9.5 20 H20.5" stroke="#111" stroke-width="2"/>' :
+            '<path d="M9 22 Q15 16 21 22" stroke="#111" stroke-width="2" fill="none"/>'}</svg>`;
+document.querySelectorAll('.faces').forEach(td => { td.innerHTML = face('h') + face('o') + face('s'); });
+
+// bar graph for 3 tries on Night 4 (0 to 180 words)
+(function(){
+  const w = 720, h = 560, left = 56, bottom = 40, top = 16, max = 180, step = 10;
+  const gh = h - bottom - top;
+  let s = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" font-family="Andika">`;
+  for (let v=0; v<=max; v+=step){
+    const y = top + gh - v/max*gh;
+    s += `<line x1="${left}" y1="${y}" x2="${w-10}" y2="${y}" stroke="${v%50===0?'#555':'#bbb'}" stroke-width="${v%50===0?1.6:1}"/>`;
+    if (v%20===0) s += `<text x="${left-8}" y="${y+5}" text-anchor="end" font-size="15">${v}</text>`;
+  }
+  const cols = ['Try 1','Try 2','Try 3'];
+  const bw = 120, gap = (w - left - 10 - 3*bw)/4;
+  cols.forEach((c,i) => {
+    const x = left + gap + i*(bw+gap);
+    s += `<rect x="${x}" y="${top}" width="${bw}" height="${gh}" fill="none" stroke="#111" stroke-width="2"/>`;
+    s += `<text x="${x+bw/2}" y="${h-12}" text-anchor="middle" font-size="18" font-weight="700">${c}</text>`;
+  });
+  s += `<line x1="${left}" y1="${top}" x2="${left}" y2="${top+gh}" stroke="#111" stroke-width="2"/><line x1="${left}" y1="${top+gh}" x2="${w-10}" y2="${top+gh}" stroke="#111" stroke-width="2"/>`;
+  s += `<text transform="translate(16 ${top+gh/2}) rotate(-90)" text-anchor="middle" font-size="15">words correct</text></svg>`;
+  document.getElementById('graph').innerHTML = s;
+})();
+</script>
+</body>
+</html>

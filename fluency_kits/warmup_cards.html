@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Word Warm-Up</title>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; background:#fff; font-family:'Andika', sans-serif; color:#111; }
+  @page { size: letter; margin: 0.5in; }
+  .sheet { width:720px; height:956px; position:relative; overflow:hidden; break-after:page; }
+  .sheet:last-child { break-after:auto; }
+  header { display:flex; align-items:center; justify-content:space-between; height:56px; border-bottom:3px solid #111; margin-bottom:8px; }
+  header h1 { margin:0; font-size:34px; display:flex; align-items:center; gap:8px; }
+  header .name { font-size:17px; }
+  .lead { font-size:17px; margin:4px 0 10px; }
+  /* word pyramid */
+  .pyr { display:flex; flex-direction:column; align-items:center; gap:7px; }
+  .row { display:flex; align-items:center; gap:10px; }
+  .step { border:2.5px solid #111; border-radius:10px; padding:5px 14px; display:flex; gap:18px; justify-content:center; font-size:22px; white-space:nowrap; }
+  .step .w b { font-weight:400; color:#999; padding:0 1px; }
+  .tag { font-size:13.5px; font-weight:700; text-align:center; line-height:1.15; }
+  .rowwrap { display:grid; grid-template-columns:84px 506px 110px; align-items:center; gap:10px; width:100%; }
+  .checks { display:flex; gap:4px; }
+  .checks span { width:24px; height:24px; border:2px solid #111; border-radius:4px; font-size:10px; display:flex; align-items:flex-end; justify-content:center; line-height:1; padding-bottom:1px; }
+  .dayhead { display:grid; grid-template-columns:84px 506px 110px; gap:10px; width:100%; }
+  .dayhead div:last-child { display:flex; gap:4px; font-size:11px; font-weight:700; }
+  .dayhead div:last-child span { width:24px; text-align:center; }
+  h2 { font-size:24px; margin:16px 0 4px; }
+  .phr { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; }
+  .pp { border:2.5px dashed #111; border-radius:10px; padding:10px 6px; text-align:center; font-size:18px; line-height:1.65; }
+  .pp div:nth-child(1) { font-size:21px; }
+  .stuck { margin-top:18px; border:3px solid #111; border-radius:12px; padding:10px 12px; }
+  .st-h { font-size:21px; font-weight:700; text-align:center; margin-bottom:8px; }
+  .st-g { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; text-align:center; font-size:17px; line-height:1.3; }
+  .st-g b { display:block; margin:0 auto 4px; width:30px; height:30px; border-radius:50%; border:2.5px solid #111; font-size:18px; line-height:25px; }
+  /* cards */
+  .cards { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:repeat(4, 1fr); height:830px; border:2px dashed #555; }
+  .card { border:1px dashed #777; padding:8px 10px; display:grid; grid-template-columns:132px 1fr; gap:10px; align-items:center; }
+  .card svg { width:132px; height:auto; }
+  .card .word { font-size:32px; font-weight:700; line-height:1; }
+  .card .syl { font-size:19px; letter-spacing:1px; margin:3px 0 6px; }
+  .card .mean { font-size:16px; line-height:1.3; }
+  .card .from { font-size:14px; font-style:italic; line-height:1.3; margin-top:6px; color:#333; }
+  .cut { font-size:14px; margin:0 0 4px; }
+</style>
+<script src="../sam_the_spider/art.js"></script>
+<script src="kit.js"></script>
+</head>
+<body>
+
+<div class="sheet">
+  <header><h1><span class="hi"></span>Word Warm-Up</h1><div class="name">Name: ______________________</div></header>
+  <p class="lead">Read each step from the top down. Tap the sounds. Chunk the long words. Check a box when you can read the whole step smoothly.</p>
+  <div class="dayhead"><div></div><div></div><div><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span></div></div>
+  <div class="pyr" id="pyr"></div>
+  <h2>Phrase Pyramids: read it smoothly, like talking</h2>
+  <div class="phr" id="phr"></div>
+  <div class="stuck">
+    <div class="st-h">Stuck on a word? Don’t give up!</div>
+    <div class="st-g">
+      <div><b>1</b>Tap the sounds.<br><i id="ex1"></i></div>
+      <div><b>2</b>Find the vowel.<br><i>What sound?</i></div>
+      <div><b>3</b>Chunk it.<br><i id="ex3"></i></div>
+      <div><b>4</b>Reread the<br>sentence.</div>
+    </div>
+  </div>
+</div>
+
+<div class="sheet">
+  <header><h1><span class="hi"></span>Power Word Cards</h1><div class="name">Name: ______________________</div></header>
+  <p class="cut" id="powerlead"></p>
+  <div class="cards" id="cards"></div>
+</div>
+
+<script>
+renderWarmup(STORY);
+</script>
+</body>
+</html>

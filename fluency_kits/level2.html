@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Level 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; background:#fff; font-family:'Andika', sans-serif; color:#1f1f1f; }
+  @page { size: letter; margin: 0.5in; }
+  .sheet { width:720px; height:956px; position:relative; overflow:hidden; break-after:page; }
+  .sheet:last-child { break-after:auto; }
+  header { display:flex; align-items:center; justify-content:space-between; height:58px; margin-bottom:8px; border-bottom:3px solid #2b2b2b; }
+  header h1 { margin:0; font-size:36px; line-height:1; display:flex; align-items:center; gap:8px; }
+  header .name { font-size:17px; }
+  .lvl { font-size:18px; color:#555; position:absolute; right:0; bottom:0; }
+  .grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:9px; }
+  .panel { border:2.5px solid #2b2b2b; display:flex; flex-direction:column; }
+  .panel svg { display:block; width:100%; height:auto; border-bottom:2.5px solid #2b2b2b; }
+  .cap { height:122px; display:flex; align-items:center; justify-content:center; text-align:center;
+         font-size:18.5px; line-height:1.28; padding:4px 8px; text-wrap:balance; }
+  .cap.long { font-size:16px; line-height:1.25; }
+  .passage.tight { font-size:18px; line-height:1.48; }
+  .num { position:absolute; margin:4px 0 0 4px; width:22px; height:22px; border-radius:50%; background:#fff; border:2px solid #2b2b2b; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .panelwrap { position:relative; }
+  h2 { font-size:24px; margin:16px 0 6px; }
+  .stretch { display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; }
+  .sw { border:2px dashed #555; border-radius:8px; text-align:center; padding:8px 4px; }
+  .sw b { display:block; font-size:24px; }
+  .sw span { font-size:18px; color:#333; letter-spacing:1px; }
+  ol.q { margin:0; padding-left:30px; font-size:19px; line-height:1.55; }
+  /* passage */
+  .passage { width:100%; border-collapse:collapse; font-size:19px; line-height:1.62; }
+  .passage td.c { width:48px; text-align:right; color:#555; font-size:15px; vertical-align:baseline; }
+  .tbl { width:100%; border-collapse:collapse; font-size:17px; margin-top:6px; }
+  .tbl th, .tbl td { border:2px solid #2b2b2b; padding:6px 8px; text-align:center; }
+  .tbl td.l { text-align:left; }
+  .howto { font-size:16.5px; line-height:1.45; margin:4px 0 0; padding-left:22px; }
+</style>
+<script src="../sam_the_spider/art.js"></script>
+<script src="kit.js"></script>
+</head>
+<body>
+
+<div class="sheet" id="s1">
+  <header><h1><span class="hicon"></span><span class="ttl"></span></h1><div class="name">Name: ______________________</div></header>
+  <div class="grid" id="g1"></div>
+  <div class="lvl">★★</div>
+</div>
+
+<div class="sheet" id="s2">
+  <header><h1><span class="ttl"></span> <span style="font-size:20px;font-weight:400">(page 2)</span></h1><div class="name">Name: ______________________</div></header>
+  <div class="grid" id="g2"></div>
+  <h2>Stretch Words: Chunk It!</h2>
+  <div class="stretch" id="stretch"></div>
+  <h2 style="font-size:20px;margin:12px 0 6px">♡ Heart Words: these don’t follow the rules. Know them by heart!</h2>
+  <div class="stretch" id="heart"></div>
+  <h2>Think About the Story</h2>
+  <ol class="q" id="qs"></ol>
+  <div class="lvl">★★</div>
+</div>
+
+<div class="sheet" id="s3">
+  <header><h1 style="font-size:30px;display:block"><span class="ttl"></span>: 1-Minute Read</h1><div class="name">Name: ______________</div></header>
+  <table class="passage" id="passage"></table>
+  <h2 style="margin-top:10px">My 1-Minute Reads</h2>
+  <table class="tbl">
+    <tr><th></th><th>Date</th><th>Words I read<br>in 1 minute</th><th>Tricky words</th><th>Words correct</th></tr>
+    <tr><td class="l"><b>Try 1</b></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td class="l"><b>Try 2</b></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td class="l"><b>Try 3</b></td><td></td><td></td><td></td><td></td></tr>
+  </table>
+  <ol class="howto">
+    <li>Set a timer for 1 minute. Start reading at the top.</li>
+    <li>A grown-up lightly marks any tricky words. When the timer rings, mark where you stopped.</li>
+    <li>Use the number at the end of the line to count your words. Take away the tricky words.</li>
+  </ol>
+  <div class="lvl">★★</div>
+</div>
+
+<script>
+renderLevel2(STORY);
+</script>
+</body>
+</html>

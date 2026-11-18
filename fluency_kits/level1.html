@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Level 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; background:#fff; font-family:'Andika', sans-serif; color:#1f1f1f; }
+  #page { width:1300px; padding:10px; background:#fff; position:relative; }
+  .grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; }
+  .panel { border:3px solid #2b2b2b; background:#fff; display:flex; flex-direction:column; }
+  .panel svg { display:block; width:100%; height:auto; border-bottom:3px solid #2b2b2b; }
+  .panel.title svg { border-bottom:none; height:100%; }
+  .cap { height:84px; display:flex; align-items:center; justify-content:center; text-align:center;
+         font-size:21px; line-height:1.2; padding:4px 10px; text-wrap:balance; }
+  .cap.long { font-size:19px; line-height:1.15; }
+  .strip { display:grid; grid-template-columns:230px 1fr; gap:10px; margin-top:14px; }
+  .wordbox { border:2px dashed #555; padding:10px 12px; text-align:center; display:flex; flex-direction:column; justify-content:center; }
+  .wordbox h2 { margin:0; font-size:27px; line-height:1.1; }
+  .wordbox .list { font-size:17px; line-height:1.55; margin-top:4px; }
+  .cards { display:grid; grid-template-columns:repeat(7, 1fr); border:2px dashed #555; }
+  .card { border:1px dashed #888; display:flex; flex-direction:column; align-items:center; padding:4px 2px 6px; }
+  .card svg { width:100%; height:auto; display:block; }
+  .card span { font-size:23px; line-height:1; margin-top:2px; }
+  #questions { width:1300px; padding:6px 14px 0; font-size:32px; line-height:1.4; }
+  #questions h3 { margin:0 0 2px; font-size:36px; }
+  #questions ol { margin:0; padding-left:56px; }
+  .lvl { position:absolute; right:22px; bottom:2px; font-size:22px; color:#555; }
+  @page { size: letter; margin: 0.5in; }
+  @media print { body { zoom: 0.5538; } }
+</style>
+<script src="../sam_the_spider/art.js"></script>
+<script src="kit.js"></script>
+</head>
+<body>
+<div id="page">
+  <div class="grid" id="grid"></div>
+  <div class="strip">
+    <div class="wordbox">
+      <h2>CVC Words<br>to Find</h2>
+      <div id="wbicon"></div>
+      <div class="list" id="cvc"></div>
+    </div>
+    <div class="cards" id="cards"></div>
+  </div>
+</div>
+<div id="questions">
+  <h3>Think About the Story</h3>
+  <ol id="qs"></ol>
+</div>
+<script>
+renderLevel1(STORY);
+document.getElementById('page').insertAdjacentHTML('beforeend','<div class="lvl">★</div>');
+</script>
+</body>
+</html>
