@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sam the Spider</title>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#1f1f1f; --line:#2b2b2b; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:#fff; font-family:'Andika', 'Comic Sans MS', sans-serif; color:var(--ink); }
+  #page { width:1300px; padding:10px; background:#fff; }
+  .grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; }
+  .panel { border:3px solid var(--line); background:#fff; display:flex; flex-direction:column; }
+  .panel svg { display:block; width:100%; height:auto; border-bottom:3px solid var(--line); }
+  .panel.title svg { border-bottom:none; height:100%; }
+  .cap { height:84px; display:flex; align-items:center; justify-content:center; text-align:center;
+         font-size:21px; line-height:1.2; padding:4px 10px; text-wrap:balance; }
+  .strip { display:grid; grid-template-columns:230px 1fr; gap:10px; margin-top:14px; }
+  .wordbox { border:2px dashed #555; padding:10px 12px; text-align:center; display:flex; flex-direction:column; justify-content:center; }
+  .wordbox h2 { margin:0; font-size:27px; line-height:1.1; }
+  .wordbox .list { font-size:17px; line-height:1.55; margin-top:4px; }
+  .cards { display:grid; grid-template-columns:repeat(7, 1fr); border:2px dashed #555; }
+  .card { border:1px dashed #888; display:flex; flex-direction:column; align-items:center; padding:4px 2px 6px; }
+  .card svg { width:100%; height:auto; display:block; }
+  .card span { font-size:23px; line-height:1; margin-top:2px; }
+  #questions { width:1300px; padding:6px 14px 0; font-size:34px; line-height:1.45; }
+  #questions h3 { margin:0 0 2px; font-size:36px; }
+  #questions ol { margin:0; padding-left:56px; }
+  @page { size: letter; margin: 0.5in; }
+  @media print { body { zoom: 0.5538; } }
+</style>
+</head>
+<body>
+<div id="page">
+  <div class="grid" id="grid"></div>
+  <div class="strip">
+    <div class="wordbox">
+      <h2>CVC Words<br>to Find</h2>
+      <div id="wbicon"></div>
+      <div class="list">Sam • web • can • sit<br>log • not • did • get<br>big • gap • Mom<br>hug • had • his • pal</div>
+    </div>
+    <div class="cards" id="cards"></div>
+  </div>
+</div>
+<div id="questions">
+  <h3>Think About the Story</h3>
+  <ol>
+    <li>Who is the story about?</li>
+    <li>What did Sam make?</li>
+    <li>Who helped Sam?</li>
+    <li>How did Mom feel about the web?</li>
+  </ol>
+</div>
+
+<script>
+// ---------- helpers ----------
+let seed = 7;
+function rnd(){ seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+const f = n => Math.round(n*10)/10;
+
+const C = {
+  sky1:'#bfe6ff', sky2:'#eaf7ff', grass:'#7cc66b', grassDk:'#5aa64c',
+  bark:'#8b5a2b', barkDk:'#6b4220', barkLt:'#d9a86c', web:'#9aa7b4',
+  sam:'#1d1d1f', will:'#b8621b', mom:'#6a3fa0'
+};
+
+function sky(w=312,h=210, id){ return `<defs><linearGradient id="sky${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C.sky1}"/><stop offset="1" stop-color="${C.sky2}"/></linearGradient></defs><rect width="${w}" height="${h}" fill="url(#sky${id})"/>`; }
+function ground(y, w=312, h=210){
+  let s = `<path d="M0 ${y} Q ${w*0.25} ${y-8} ${w*0.5} ${y} T ${w} ${y} V ${h} H 0 Z" fill="${C.grass}"/>`;
+  for (let i=0;i<14;i++){ const x = 10 + i*22 + rnd()*8; s += `<path d="M${f(x)} ${y+6} l3 -9 l3 9" fill="none" stroke="${C.grassDk}" stroke-width="2" stroke-linecap="round"/>`; }
+  return s;
+}
+function flower(x,y,c='#ff7aa8'){
+  let s = `<line x1="${x}" y1="${y}" x2="${x}" y2="${y+16}" stroke="${C.grassDk}" stroke-width="2.5"/>`;
+  for (let a=0;a<5;a++){ const t=a*72*Math.PI/180; s += `<circle cx="${f(x+5*Math.cos(t))}" cy="${f(y+5*Math.sin(t))}" r="4" fill="${c}"/>`; }
+  return s + `<circle cx="${x}" cy="${y}" r="3" fill="#ffd23f"/>`;
+}
+function sun(x,y,r=16){
+  let s = '';
+  for (let a=0;a<12;a++){ const t=a*30*Math.PI/180; s += `<line x1="${f(x+(r+4)*Math.cos(t))}" y1="${f(y+(r+4)*Math.sin(t))}" x2="${f(x+(r+11)*Math.cos(t))}" y2="${f(y+(r+11)*Math.sin(t))}" stroke="#ffc928" stroke-width="3" stroke-linecap="round"/>`; }
+  return s + `<circle cx="${x}" cy="${y}" r="${r}" fill="#ffd84a" stroke="#f0b400" stroke-width="2"/>`;
+}
+function cloud(x,y,s=1){
+  return `<g transform="translate(${x} ${y}) scale(${s})" fill="#fff"><circle cx="0" cy="0" r="12"/><circle cx="14" cy="-6" r="14"/><circle cx="30" cy="0" r="11"/><rect x="0" y="0" width="30" height="11"/></g>`;
+}
+function heart(x,y,s=1,c='#ff4f7b'){
+  return `<path transform="translate(${x} ${y}) scale(${s})" d="M0 6 C -10 -2 -8 -12 0 -7 C 8 -12 10 -2 0 6 Z" fill="${c}" stroke="#c2185b" stroke-width="1"/>`;
+}
+function sparkle(x,y,s=1,c='#ffc928'){
+  return `<path transform="translate(${x} ${y}) scale(${s})" d="M0 -9 L2.4 -2.4 L9 0 L2.4 2.4 L0 9 L-2.4 2.4 L-9 0 L-2.4 -2.4 Z" fill="${c}" stroke="#e0a000" stroke-width="0.8"/>`;
+}
+function branch(x1,y1,x2,y2,w=9){
+  const mx=(x1+x2)/2, my=(y1+y2)/2 + 6;
+  return `<path d="M${x1} ${y1} Q ${mx} ${my} ${x2} ${y2}" stroke="${C.bark}" stroke-width="${w}" fill="none" stroke-linecap="round"/>` +
+         `<ellipse cx="${f(mx)}" cy="${f(my-6)}" rx="9" ry="5" fill="#6fbf5a" transform="rotate(-25 ${f(mx)} ${f(my-6)})"/>`;
+}
+function log(x,y,w,h){
+  // horizontal log with cut end on the right
+  let s = `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${h/2}" fill="${C.bark}" stroke="${C.barkDk}" stroke-width="2.5"/>`;
+  for (let i=0;i<4;i++){ const lx = x+22+i*(w-60)/4; s += `<path d="M${f(lx)} ${y+h*0.3} q 14 -3 26 0" stroke="${C.barkDk}" stroke-width="2" fill="none" stroke-linecap="round"/>`; s += `<path d="M${f(lx+12)} ${y+h*0.68} q 14 3 24 0" stroke="${C.barkDk}" stroke-width="2" fill="none" stroke-linecap="round"/>`; }
+  const ex = x+w-h*0.45, ey = y+h/2;
+  s += `<ellipse cx="${f(ex)}" cy="${f(ey)}" rx="${f(h*0.42)}" ry="${f(h/2-1)}" fill="${C.barkLt}" stroke="${C.barkDk}" stroke-width="2.5"/>`;
+  s += `<ellipse cx="${f(ex)}" cy="${f(ey)}" rx="${f(h*0.27)}" ry="${f(h*0.32)}" fill="none" stroke="#b5814a" stroke-width="1.6"/>`;
+  s += `<ellipse cx="${f(ex)}" cy="${f(ey)}" rx="${f(h*0.12)}" ry="${f(h*0.15)}" fill="none" stroke="#b5814a" stroke-width="1.6"/>`;
+  return s;
+}
+function gift(x,y,s=1){
+  return `<g transform="translate(${x} ${y}) scale(${s})">
+    <rect x="-22" y="-14" width="44" height="34" rx="3" fill="#e8434b" stroke="#a51f2a" stroke-width="2"/>
+    <rect x="-26" y="-22" width="52" height="11" rx="3" fill="#f25a61" stroke="#a51f2a" stroke-width="2"/>
+    <rect x="-5" y="-22" width="10" height="42" fill="#ffd23f" stroke="#d9a400" stroke-width="1.5"/>
+    <path d="M0 -22 C -18 -40 -26 -22 0 -22 Z" fill="#ffd23f" stroke="#d9a400" stroke-width="1.5"/>
+    <path d="M0 -22 C 18 -40 26 -22 0 -22 Z" fill="#ffd23f" stroke="#d9a400" stroke-width="1.5"/>
+  </g>`;
+}
+function bubble(x,y,rx,ry,tailX,tailY,inner=''){
+  return `<g><circle cx="${tailX}" cy="${tailY}" r="4" fill="#fff" stroke="#333" stroke-width="2"/>
+    <circle cx="${f((tailX+x)/2 + (tailX<x?-4:4)*0)}" cy="${f((tailY+y+ry)/2)}" r="6.5" fill="#fff" stroke="#333" stroke-width="2"/>
+    <ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#fff" stroke="#333" stroke-width="2.5"/>${inner}</g>`;
+}
+function speech(x,y,rx,ry,tx,ty,inner=''){
+  return `<g><path d="M${x-10} ${y+ry-4} L ${tx} ${ty} L ${x+8} ${y+ry-2} Z" fill="#fff" stroke="#333" stroke-width="2.5" stroke-linejoin="round"/>
+    <ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#fff" stroke="#333" stroke-width="2.5"/>
+    <rect x="${x-14}" y="${y+ry-8}" width="24" height="7" fill="#fff"/>${inner}</g>`;
+}
+
+// ---------- webs ----------
+function web(cx,cy,R,opts={}){
+  const n = opts.spokes || 10, rings = opts.rings ?? 6, col = opts.color || C.web, sw = opts.sw || 1.6;
+  const gapFrom = opts.gap ? opts.gap[0] : -1, gapTo = opts.gap ? opts.gap[1] : -1;
+  const rot = opts.rot || -90;
+  let s = '';
+  const ang = i => (rot + i*360/n) * Math.PI/180;
+  const inGap = i => opts.gap && i>=gapFrom && i<gapTo;
+  for (let i=0;i<n;i++){
+    const a = ang(i);
+    if (opts.gap && i>gapFrom && i<gapTo) continue;
+    s += `<line x1="${cx}" y1="${cy}" x2="${f(cx+R*Math.cos(a))}" y2="${f(cy+R*Math.sin(a))}" stroke="${col}" stroke-width="${sw}"/>`;
+  }
+  const maxRing = opts.partial ? Math.min(rings, opts.partial) : rings;
+  for (let k=1;k<=maxRing;k++){
+    const r = R*k/(rings+0.4);
+    for (let i=0;i<n;i++){
+      if (inGap(i) && k>1) continue;
+      const a1 = ang(i), a2 = ang(i+1), am = (a1+a2)/2;
+      const x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1), x2=cx+r*Math.cos(a2), y2=cy+r*Math.sin(a2);
+      const qx=cx+r*0.86*Math.cos(am), qy=cy+r*0.86*Math.sin(am);
+      s += `<path d="M${f(x1)} ${f(y1)} Q ${f(qx)} ${f(qy)} ${f(x2)} ${f(y2)}" stroke="${col}" stroke-width="${sw}" fill="none"/>`;
+    }
+  }
+  if (opts.gap && opts.mark){
+    const am = (ang(gapFrom)+ang(gapTo))/2, gr = R*0.58;
+    s += `<circle cx="${f(cx+gr*Math.cos(am))}" cy="${f(cy+gr*Math.sin(am))}" r="${f(R*0.36)}" fill="none" stroke="#e8434b" stroke-width="2.5" stroke-dasharray="6 4"/>`;
+  }
+  return s;
+}
+function messyWeb(cx,cy,w,h,n=34,sd=11){
+  seed = sd;
+  let s = '';
+  const pts = [];
+  for (let i=0;i<n;i++) pts.push([cx + (rnd()-0.5)*w, cy + (rnd()-0.5)*h]);
+  let d = `M${f(pts[0][0])} ${f(pts[0][1])}`;
+  for (let i=1;i<n;i++){
+    const c = [cx + (rnd()-0.5)*w*1.1, cy + (rnd()-0.5)*h*1.1];
+    d += ` Q ${f(c[0])} ${f(c[1])} ${f(pts[i][0])} ${f(pts[i][1])}`;
+  }
+  s += `<path d="${d}" stroke="#7d8a97" stroke-width="1.7" fill="none" stroke-linecap="round"/>`;
+  for (let i=0;i<5;i++){
+    const x = cx+(rnd()-0.5)*w*0.8, y = cy+(rnd()-0.5)*h*0.8, r = 5+rnd()*8;
+    s += `<path d="M${f(x)} ${f(y)} c ${f(r)} ${f(-r)} ${f(2*r)} ${f(r)} ${f(r*0.3)} ${f(r*1.2)} s ${f(-r*1.4)} ${f(-r*1.6)} ${f(r*0.6)} ${f(-r*0.9)}" stroke="#7d8a97" stroke-width="1.7" fill="none"/>`;
+  }
+  return s;
+}
+
+// ---------- spider ----------
+// unit body radius 40; legs reach about +-90 x, -55..72 y
+const BASE_LEGS = [ // right side [start, control, foot]
+  [[28,-22],[66,-66],[86,-30]],
+  [[36,-8],[84,-34],[96,6]],
+  [[36,8],[84,10],[90,46]],
+  [[28,22],[66,44],[66,74]],
+];
+function spider(o){
+  const s = o.s || 1, col = o.color || C.sam, x = o.x, y = o.y;
+  const mood = o.mood || 'happy', flip = o.flip ? -1 : 1;
+  const lk = o.look || [0,0];
+  let legs = '';
+  for (const side of [1,-1]){
+    BASE_LEGS.forEach((L,i)=>{
+      let leg = L;
+      const key = (side===1?'r':'l')+i;
+      if (o.legs && o.legs[key]) leg = o.legs[key];
+      if (o.legs && o.legs[key] === null) return;
+      const [a,b,c] = leg;
+      legs += `<path d="M${a[0]*side} ${a[1]} Q ${b[0]*side} ${b[1]} ${c[0]*side} ${c[1]}" fill="none" stroke="${col}" stroke-width="7" stroke-linecap="round"/>`;
+    });
+  }
+  // fuzzy body
+  let pts = [];
+  const N = 44;
+  for (let i=0;i<N;i++){
+    const t = i/N*Math.PI*2, r = (i%2? 45.5 : 39) + (i%4===1? 1.5:0);
+    pts.push(`${f(r*Math.cos(t))},${f(r*Math.sin(t))}`);
+  }
+  let body = `<polygon points="${pts.join(' ')}" fill="${col}" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>`;
+  if (o.shine !== false) body += `<ellipse cx="-16" cy="-24" rx="9" ry="5" fill="#fff" opacity="0.13" transform="rotate(-30 -16 -24)"/>`;
+  // eyes
+  let eyes = '';
+  if (o.eyes === 'closed'){
+    eyes = `<path d="M-25 -6 Q -15 -18 -5 -6" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M5 -6 Q 15 -18 25 -6" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+  } else {
+    for (const ex of [-14, 14]){
+      eyes += `<ellipse cx="${ex}" cy="-8" rx="11.5" ry="13.5" fill="#fff" stroke="#000" stroke-width="1.5"/>`;
+      eyes += `<circle cx="${ex+lk[0]+1}" cy="${-6+lk[1]}" r="6" fill="#111"/><circle cx="${ex+lk[0]+3}" cy="${-9+lk[1]}" r="2" fill="#fff"/>`;
+    }
+  }
+  if (o.lashes){
+    eyes += `<path d="M-24 -18 l-6 -5 M-20 -21 l-4 -7 M24 -18 l6 -5 M20 -21 l4 -7" stroke="#111" stroke-width="2.2" stroke-linecap="round"/>`;
+  }
+  // brows
+  let brows = '';
+  if (mood==='sad') brows = `<path d="M-24 -27 L-6 -31 M24 -27 L6 -31" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>`;
+  if (mood==='worried') brows = `<path d="M-23 -28 Q -14 -34 -5 -30 M23 -28 Q 14 -34 5 -30" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  if (mood==='determined') brows = `<path d="M-24 -32 L-6 -26 M24 -32 L6 -26" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>`;
+  // mouth
+  let mouth = '';
+  const pink = '#ff8fa3';
+  if (mood==='happy' || mood==='determined') mouth = `<path d="M-10 13 Q 0 26 10 13 Z" fill="${pink}" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>`;
+  if (mood==='smile') mouth = `<path d="M-9 14 Q 0 22 9 14" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`;
+  if (mood==='grin') mouth = `<path d="M-17 10 Q 0 34 17 10 Z" fill="#c9304a" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M-14 11.5 L14 11.5 L12 15 L-12 15 Z" fill="#fff"/><ellipse cx="0" cy="22" rx="6" ry="3.5" fill="${pink}"/>`;
+  if (mood==='sad') mouth = `<path d="M-10 21 Q 0 11 10 21" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`;
+  if (mood==='worried') mouth = `<path d="M-10 18 q 3.5 -4 7 0 t 7 0 t 6 0" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>`;
+  if (mood==='surprised') mouth = `<ellipse cx="0" cy="17" rx="6" ry="7.5" fill="#c9304a" stroke="#fff" stroke-width="1.5"/>`;
+  let extra = '';
+  if (o.cheeks !== false && mood!=='sad') extra += `<circle cx="-27" cy="9" r="5" fill="#ff7c9c" opacity="0.75"/><circle cx="27" cy="9" r="5" fill="#ff7c9c" opacity="0.75"/>`;
+  if (o.tear) extra += `<path d="M-22 6 q -5 9 0 12 q 5 -3 0 -12 Z" fill="#5bb8ff" stroke="#2f8de0" stroke-width="1"/>`;
+  if (o.bow) extra += `<g transform="translate(22 -38) rotate(15)"><path d="M0 0 L-15 -10 L-15 10 Z M0 0 L15 -10 L15 10 Z" fill="#ff5fa2" stroke="#c2185b" stroke-width="1.8" stroke-linejoin="round"/><circle r="4.5" fill="#ff8cc0" stroke="#c2185b" stroke-width="1.5"/></g>`;
+  if (o.cap) extra += `<g transform="translate(0 -30)"><path d="M-30 0 Q -28 -30 0 -31 Q 28 -30 30 0 Z" fill="#2fa84f" stroke="#1d7a36" stroke-width="2"/><path d="M14 -2 Q 36 -6 46 2 Q 34 6 14 3 Z" fill="#26913f" stroke="#1d7a36" stroke-width="2"/><circle cx="0" cy="-30" r="3.5" fill="#1d7a36"/></g>`;
+  const face = `<g transform="scale(${flip} 1)">${eyes}</g>${brows}${mouth}${extra}`;
+  const thread = o.thread != null ? `<line x1="${x}" y1="${o.thread}" x2="${x}" y2="${y-40*s}" stroke="#555" stroke-width="1.5"/>` : '';
+  return `${thread}<g transform="translate(${x} ${y}) scale(${s*flip} ${s})${o.rot?` rotate(${o.rot})`:''}">${legs}${body}<g transform="scale(${flip} 1)">${face}</g></g>`;
+}
+// leg poses
+const POSE = {
+  wave: { r0: [[28,-22],[58,-52],[64,-78]] },
+  waveL: { l0: [[28,-22],[58,-52],[64,-78]] },
+  cheeks: { r0: [[28,-22],[56,-30],[34,6]], l0: [[28,-22],[56,-30],[34,6]] },
+  sit: { r2: [[36,8],[70,24],[86,56]], l2:[[36,8],[70,24],[86,56]], r3:[[28,22],[50,44],[50,56]], l3:[[28,22],[50,44],[50,56]] },
+  armsUp: { r0: [[28,-22],[50,-56],[66,-74]], l0: [[28,-22],[50,-56],[66,-74]] },
+};
+function merge(...p){ return Object.assign({}, ...p); }
+
+// ---------- panels ----------
+const W = 312, H = 210;
+const panels = [];
+
+// 1 Title
+panels.push({ title:true, svg: (()=>{
+  seed=3; const id='t';
+  let s = sky(W,280,id) + sun(268,36,14) + cloud(30,34,0.9) + ground(236,W,280);
+  s += web(0,0,92,{spokes:6,rings:5,rot:0, color:'#a7b4c0'}).replace(/<line[^>]*x2="-[^>]*>/g,'');
+  s += web(W,0,70,{spokes:6,rings:4,rot:90,color:'#a7b4c0'});
+  s += `<rect x="72" y="182" width="14" height="70" fill="${C.bark}" stroke="${C.barkDk}" stroke-width="2"/><rect x="226" y="182" width="14" height="70" fill="${C.bark}" stroke="${C.barkDk}" stroke-width="2"/>`;
+  s += `<rect x="28" y="70" width="256" height="122" rx="10" fill="#e9c38f" stroke="${C.barkDk}" stroke-width="4"/>`;
+  s += `<rect x="38" y="80" width="236" height="102" rx="6" fill="#f6dfb4" stroke="#c99a5e" stroke-width="2"/>`;
+  s += `<text x="156" y="126" text-anchor="middle" font-family="Andika" font-weight="700" font-size="44" fill="#222">Sam the</text>`;
+  s += `<text x="156" y="172" text-anchor="middle" font-family="Andika" font-weight="700" font-size="44" fill="#222">Spider</text>`;
+  s += spider({x:252, y:58, s:0.44, thread:0, mood:'happy', look:[-3,2]});
+  s += flower(26,246,'#ff7aa8') + flower(284,250,'#ffb84d') + flower(150,258,'#b388ff');
+  return {h:280, s};
+})()});
+
+// 2 Sam is a spider
+panels.push({ text:'Sam is a spider. Sam can spin a web.', svg:(()=>{
+  seed=5; const id='p2';
+  let s = sky(W,H,id) + cloud(250,30,0.8) + ground(188);
+  s += branch(-10,22,170,8,10) + `<rect x="276" y="0" width="22" height="200" fill="${C.bark}" stroke="${C.barkDk}" stroke-width="2"/>`;
+  s += `<line x1="70" y1="20" x2="110" y2="58" stroke="${C.web}" stroke-width="1.6"/><line x1="276" y1="96" x2="214" y2="100" stroke="${C.web}" stroke-width="1.6"/><line x1="150" y1="186" x2="160" y2="160" stroke="${C.web}" stroke-width="1.6"/>`;
+  s += web(156,100,82,{spokes:12,rings:6});
+  s += spider({x:156, y:104, s:0.46, mood:'happy'});
+  s += flower(40,176) + flower(242,180,'#ffb84d');
+  return {h:H,s};
+})()});
+
+// 3 plan + gift
+panels.push({ text:'Sam has a plan. He will make a web for Mom. Mom will get a gift.', svg:(()=>{
+  seed=8; const id='p3';
+  let s = sky(W,H,id) + ground(176);
+  const inner = web(175,64,34,{spokes:10,rings:4}) + gift(248,74,0.75) + `<text x="210" y="80" font-family="Andika" font-weight="700" font-size="22" fill="#e8434b">+</text>` + heart(252,30,0.9);
+  s += bubble(212,64,90,50, 96,128, inner);
+  s += spider({x:66, y:160, s:0.5, mood:'happy', look:[3,-3]});
+  s += flower(150,180) + flower(286,182,'#b388ff');
+  return {h:H,s};
+})()});
+
+// 4 sat on a log, spun his web
+panels.push({ text:'Sam sat on a log. He spun his web.', svg:(()=>{
+  seed=13; const id='p4';
+  let s = sky(W,H,id) + sun(36,34,13) + ground(170);
+  s += `<path d="M262 170 L 262 40" stroke="#5aa64c" stroke-width="4"/><path d="M262 90 q 18 -10 30 -2 q -14 10 -30 2" fill="#7cc66b" stroke="#5aa64c" stroke-width="2"/>`;
+  s += log(30,148,230,44);
+  // threads from Sam to stalk + start of a web
+  s += `<path d="M150 104 Q 210 70 262 60" stroke="#7d8a97" stroke-width="1.6" fill="none"/>`;
+  s += `<path d="M156 110 Q 214 96 262 110" stroke="#7d8a97" stroke-width="1.6" fill="none"/>`;
+  s += `<path d="M196 82 L 214 102 M228 72 L 236 104" stroke="#7d8a97" stroke-width="1.6"/>`;
+  s += spider({x:120, y:118, s:0.42, mood:'happy', look:[4,-2], legs:merge(POSE.sit,{r0:[[28,-22],[60,-40],[80,-34]]})});
+  return {h:H,s};
+})()});
+
+// 5 web was a mess
+panels.push({ text:'The web was a mess!', svg:(()=>{
+  seed=17; const id='p5';
+  let s = sky(W,H,id) + ground(178);
+  s += branch(-10,30,140,14,9) + `<path d="M300 178 L 300 22" stroke="#5aa64c" stroke-width="4"/>`;
+  s += messyWeb(160,90,210,120,40,23);
+  s += `<path d="M60 22 L 92 50 M296 60 L 252 74" stroke="#7d8a97" stroke-width="1.6"/>`;
+  s += log(10,170,140,34);
+  s += spider({x:60, y:150, s:0.36, mood:'surprised', look:[4,-4], legs:POSE.sit});
+  s += `<text x="96" y="132" font-family="Andika" font-weight="700" font-size="28" fill="#e8434b">!</text>`;
+  return {h:H,s};
+})()});
+
+// 6 Oh no
+panels.push({ text:'“Oh, no!” said Sam. “I can not do it!”', svg:(()=>{
+  seed=19; const id='p6';
+  let s = sky(W,H,id) + ground(184);
+  s += messyWeb(250,70,90,90,22,31);
+  s += log(50,168,210,40);
+  s += spider({x:140, y:118, s:0.62, mood:'sad', tear:true, look:[0,3], legs:merge(POSE.cheeks, POSE.sit)});
+  return {h:H,s};
+})()});
+
+// 7 Will came by
+panels.push({ text:'His pal, Will, came by.', svg:(()=>{
+  seed=23; const id='p7';
+  let s = sky(W,H,id) + cloud(130,30,0.8) + ground(170);
+  s += log(4,150,140,38);
+  s += spider({x:66, y:122, s:0.4, mood:'sad', look:[4,0], legs:POSE.sit});
+  s += spider({x:228, y:134, s:0.44, color:C.will, cap:true, mood:'happy', look:[-4,0], legs:POSE.waveL});
+  s += `<path d="M284 112 h 18 M288 126 h 16 M284 140 h 18" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>`;
+  s += flower(150,176,'#ffb84d');
+  return {h:H,s};
+})()});
+
+// 8 Do not fret
+panels.push({ text:'“Do not fret, Sam,” said Will. “Mom will love it!”', svg:(()=>{
+  seed=29; const id='p8';
+  let s = sky(W,H,id) + ground(178);
+  s += log(30,154,250,40);
+  s += spider({x:104, y:126, s:0.42, mood:'smile', look:[4,-2], legs:POSE.sit});
+  s += spider({x:196, y:122, s:0.46, color:C.will, cap:true, mood:'happy', look:[-4,-1], legs:merge(POSE.sit,{l0:[[28,-22],[64,-44],[86,-22]]})});
+  s += speech(256,40,46,28,214,80, heart(244,40,1.3) + heart(268,42,1.0));
+  return {h:H,s};
+})()});
+
+// 9 got up and spun a web
+panels.push({ text:'Sam had a plan. He got up and spun a web.', svg:(()=>{
+  seed=31; const id='p9';
+  let s = sky(W,H,id) + sun(280,30,12) + ground(186);
+  s += branch(-10,18,250,14,10);
+  s += `<path d="M30 186 L 30 60" stroke="#5aa64c" stroke-width="4"/><path d="M290 186 L 290 70" stroke="#5aa64c" stroke-width="4"/>`;
+  s += `<line x1="110" y1="20" x2="128" y2="54" stroke="${C.web}" stroke-width="1.6"/><line x1="30" y1="110" x2="70" y2="106" stroke="${C.web}" stroke-width="1.6"/>`;
+  s += web(132,108,62,{spokes:10,rings:6,partial:3});
+  s += `<line x1="132" y1="108" x2="226" y2="108" stroke="#7d8a97" stroke-width="1.6"/>`;
+  s += spider({x:236, y:100, s:0.42, mood:'determined', look:[-4,0], thread:16});
+  s += sparkle(200,60,1) + sparkle(276,140,0.8) + sparkle(70,160,0.7);
+  return {h:H,s};
+})()});
+
+// 10 big gap
+panels.push({ text:'The web had a big gap, but Sam did his best.', svg:(()=>{
+  seed=37; const id='p10';
+  let s = sky(W,H,id) + ground(188);
+  s += branch(-10,16,230,12,10);
+  s += `<path d="M44 18 L 60 50 M190 14 L 172 48" stroke="${C.web}" stroke-width="1.6"/>`;
+  s += web(112,110,80,{spokes:12,rings:6,gap:[3,6],mark:true, rot:-90});
+  s += spider({x:252, y:144, s:0.46, mood:'grin', eyes:'closed', legs:POSE.wave});
+  s += sparkle(214,70,1) + sparkle(292,92,0.8);
+  return {h:H,s};
+})()});
+
+// 11 Mom sees web, hug
+panels.push({ text:'Sam let Mom see the web. Mom gave Sam a hug.', svg:(()=>{
+  seed=41; const id='p11';
+  let s = sky(W,H,id) + ground(186);
+  s += branch(-10,12,150,8,9);
+  s += web(70,92,62,{spokes:12,rings:6,gap:[3,6]});
+  s += spider({x:206, y:120, s:0.62, color:C.mom, bow:true, lashes:true, mood:'happy', eyes:'closed', legs:{l0:null,l1:null}});
+  s += spider({x:158, y:146, s:0.42, mood:'happy', eyes:'closed'});
+  // Mom's arm wrapping around Sam's back
+  s += `<path d="M188 110 Q 160 96 138 126" stroke="${C.mom}" stroke-width="4.5" fill="none" stroke-linecap="round"/>`;
+  s += `<path d="M186 134 Q 172 174 138 160" stroke="${C.mom}" stroke-width="4.5" fill="none" stroke-linecap="round"/>`;
+  s += heart(190,48,1.4) + heart(226,30,1) + heart(160,64,0.9);
+  return {h:H,s};
+})()});
+
+// 12 I love it, glad, grin
+panels.push({ text:'“I love it!” she said. Sam was glad. Mom had a big grin!', svg:(()=>{
+  seed=43; const id='p12';
+  let s = sky(W,H,id) + sun(36,32,13) + ground(186);
+  s += web(256,62,60,{spokes:12,rings:6,gap:[3,6]});
+  s += `<path d="M256 0 L 256 4" stroke="${C.web}"/>`;
+  s += spider({x:100, y:126, s:0.66, color:C.mom, bow:true, lashes:true, mood:'grin', look:[2,-1]});
+  s += spider({x:212, y:148, s:0.44, mood:'happy', look:[-3,-2], legs:POSE.armsUp});
+  s += heart(160,56,1.5) + sparkle(290,150,0.9) + sparkle(30,90,0.8);
+  return {h:H,s};
+})()});
+
+// render panels
+const grid = document.getElementById('grid');
+panels.forEach((p,i)=>{
+  const d = document.createElement('div');
+  d.className = 'panel' + (p.title ? ' title' : '');
+  const h = p.svg.h;
+  d.innerHTML = `<svg viewBox="0 0 ${W} ${h}" xmlns="http://www.w3.org/2000/svg"><clipPath id="c${i}"><rect width="${W}" height="${h}"/></clipPath><g clip-path="url(#c${i})">${p.svg.s}</g></svg>` + (p.title ? '' : `<div class="cap">${p.text}</div>`);
+  grid.appendChild(d);
+});
+
+// ---------- word cards ----------
+const CW = 150, CH = 100;
+const cards = [
+  ['Sam', ()=> spider({x:75,y:52,s:0.5,mood:'happy'})],
+  ['Mom', ()=> spider({x:75,y:52,s:0.5,color:C.mom,bow:true,lashes:true,mood:'happy'})],
+  ['pal', ()=> spider({x:75,y:56,s:0.48,color:C.will,cap:true,mood:'happy',legs:POSE.wave})],
+  ['web', ()=> web(75,50,46,{spokes:10,rings:5})],
+  ['log', ()=> log(18,34,114,40)],
+  ['sit', ()=> log(24,66,102,28) + spider({x:70,y:46,s:0.3,mood:'happy',legs:POSE.sit})],
+  ['hug', ()=> spider({x:92,y:50,s:0.44,color:C.mom,bow:true,eyes:'closed',legs:{l0:null,l1:null}}) + spider({x:60,y:64,s:0.32,eyes:'closed'}) + `<path d="M78 56 Q 70 86 50 74" stroke="${C.mom}" stroke-width="4" fill="none" stroke-linecap="round"/>` + heart(118,18,1)],
+  ['gap', ()=> web(75,52,46,{spokes:12,rings:5,gap:[3,6],mark:true})],
+  ['big', ()=> spider({x:58,y:50,s:0.5,mood:'happy'}) + spider({x:122,y:76,s:0.18,mood:'happy'})],
+  ['mess', ()=> messyWeb(75,50,110,74,26,5)],
+  ['gift', ()=> gift(75,54,1.2)],
+  ['spin', ()=> web(52,58,36,{spokes:10,rings:5,partial:3}) + `<line x1="52" y1="58" x2="112" y2="52" stroke="#7d8a97" stroke-width="1.5"/>` + spider({x:118,y:50,s:0.3,mood:'happy',thread:0})],
+  ['grin', ()=> spider({x:75,y:52,s:0.52,color:C.mom,bow:true,lashes:true,mood:'grin'})],
+  ['glad', ()=> spider({x:75,y:56,s:0.48,mood:'grin',eyes:'closed',legs:POSE.armsUp}) + sparkle(22,24,0.9) + sparkle(130,26,0.9)],
+];
+const cardsEl = document.getElementById('cards');
+cards.forEach(([w,fn],i)=>{
+  const d = document.createElement('div'); d.className='card';
+  d.innerHTML = `<svg viewBox="0 0 ${CW} ${CH}" xmlns="http://www.w3.org/2000/svg"><clipPath id="k${i}"><rect width="${CW}" height="${CH}"/></clipPath><g clip-path="url(#k${i})">${fn()}</g></svg><span>${w}</span>`;
+  cardsEl.appendChild(d);
+});
+document.getElementById('wbicon').innerHTML = `<svg viewBox="0 0 120 70" width="90" height="52">${spider({x:60,y:44,s:0.28,thread:0,mood:'happy'})}</svg>`;
+</script>
+</body>
+</html>
