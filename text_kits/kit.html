@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fluency Kit</title>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; background:#fff; font-family:'Andika', sans-serif; color:#111; }
+  @page { size: letter; margin: 0.5in; }
+  .sheet { width:720px; height:956px; position:relative; overflow:hidden; break-after:page; }
+  .sheet:last-child { break-after:auto; }
+  header { display:flex; align-items:center; justify-content:space-between; height:56px; border-bottom:3px solid #111; margin-bottom:10px; }
+  header h1 { margin:0; font-size:30px; line-height:1.05; }
+  header .stars { font-size:22px; color:#444; letter-spacing:2px; }
+  header .pg { font-size:18px; font-weight:400; }
+  header .name { font-size:16px; white-space:nowrap; }
+  p, li { font-size:16px; line-height:1.45; }
+  p { margin:6px 0; }
+  h2 { font-size:21px; margin:14px 0 4px; }
+  h3 { font-size:18px; margin:0 0 4px; }
+  ul, ol { margin:4px 0; padding-left:24px; }
+  .say { font-style:italic; }
+  .box { border:2.5px solid #111; border-radius:10px; padding:8px 14px; margin-top:10px; }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .sig { margin-top:12px; }
+
+  /* word marks */
+  .cvc { text-decoration:underline; text-decoration-thickness:2.5px; text-underline-offset:4px; }
+  .hw { border:2px dashed #111; border-radius:5px; padding:0 3px; }
+  .cue { font-weight:700; color:#111; padding:0 2px; }
+  .key { font-size:16px; border:2px solid #111; border-radius:8px; padding:6px 10px; margin-bottom:10px; line-height:1.9; }
+
+  /* passages */
+  .pwrap { position:relative; padding-right:52px; }
+  .ptext p { margin:0 0 6px; text-indent:34px; }
+  .mode-l1 .ptext p { font-size:20px; line-height:1.74; margin-bottom:2px; }
+  .mode-l2 .ptext p { font-size:18.5px; line-height:1.85; margin-bottom:2px; }
+  .mode-cued .ptext p { font-size:20px; line-height:2.05; }
+  .mode-clean .ptext p { font-size:16.5px; line-height:1.68; margin-bottom:3px; }
+  .cnt { position:absolute; right:0; width:44px; text-align:right; font-size:14px; color:#555; }
+  .track { margin-top:12px; font-size:16px; border-top:2px solid #111; padding-top:8px; }
+  .track span { display:inline-block; width:70px; border-bottom:1.5px solid #111; margin:0 12px 0 4px; }
+  .track i { color:#555; font-size:14px; }
+  ol.q li { font-size:17px; line-height:1.45; }
+
+  /* letter + plan */
+  table.lv { border-collapse:collapse; width:100%; margin:6px 0; }
+  table.lv td { border:2px solid #111; padding:6px 8px; font-size:15.5px; line-height:1.6; vertical-align:top; }
+  table.lv td:first-child { width:58px; text-align:center; font-size:18px; }
+  table.plan { width:100%; border-collapse:collapse; }
+  .plan th, .plan td { border:2px solid #111; padding:6px 7px; vertical-align:top; font-size:15px; line-height:1.4; }
+  .plan th { background:#eee; }
+  .plan td.n { font-weight:700; font-size:17px; width:56px; text-align:center; }
+  .cb { display:inline-block; width:15px; height:15px; border:2px solid #111; border-radius:3px; vertical-align:-2px; margin-right:5px; }
+
+  /* warm-up */
+  .lead { font-size:17px; }
+  .pyr { display:flex; flex-direction:column; gap:8px; }
+  .rowwrap, .dayhead { display:grid; grid-template-columns:84px 506px 110px; align-items:center; gap:10px; }
+  .dayhead div:last-child { display:flex; gap:4px; font-size:11px; font-weight:700; }
+  .dayhead div:last-child span { width:24px; text-align:center; }
+  .tag { font-size:13.5px; font-weight:700; text-align:center; line-height:1.15; }
+  .step { border:2.5px solid #111; border-radius:10px; padding:5px 14px; display:flex; gap:18px; font-size:22px; white-space:nowrap; }
+  .step b { font-weight:400; color:#999; padding:0 1px; }
+  .checks { display:flex; gap:4px; }
+  .checks span { width:24px; height:24px; border:2px solid #111; border-radius:4px; }
+  .phr { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; }
+  .pp { border:2.5px dashed #111; border-radius:10px; padding:10px 6px; text-align:center; font-size:17.5px; line-height:1.65; }
+  .stuck { margin-top:18px; border:3px solid #111; border-radius:12px; padding:10px 12px; }
+  .st-h { font-size:21px; font-weight:700; text-align:center; margin-bottom:8px; }
+  .st-g { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; text-align:center; font-size:17px; line-height:1.3; }
+  .st-g b { display:block; margin:0 auto 4px; width:30px; height:30px; border-radius:50%; border:2.5px solid #111; font-size:18px; line-height:25px; }
+
+  /* questions */
+  .qq { font-size:17.5px; font-weight:700; margin:12px 0 0; }
+  .lines div { border-bottom:1.5px solid #111; height:32px; }
+  .words dl { display:grid; grid-template-columns:150px 1fr; gap:3px 10px; margin:4px 0 0; font-size:14.5px; line-height:1.3; }
+  .words dt { font-weight:700; }
+  .words dd { margin:0; }
+
+  /* log */
+  table.log { width:100%; border-collapse:collapse; }
+  .log th, .log td { border:2px solid #111; padding:6px; font-size:15px; text-align:center; height:44px; }
+
+  /* cards */
+  .cut { font-size:15px; }
+  .cards { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:repeat(4, 1fr); height:836px; border:2px dashed #555; }
+  .card { border:1px dashed #777; padding:12px 16px; display:flex; flex-direction:column; }
+  .card .word { font-size:32px; font-weight:700; line-height:1; }
+  .card .syl { font-size:19px; letter-spacing:1px; margin:4px 0 8px; }
+  .card .mean { font-size:16px; line-height:1.3; }
+  .card .from { font-size:14px; font-style:italic; line-height:1.3; margin-top:6px; color:#333; }
+  .card .mine { font-size:14px; margin-top:auto; }
+</style>
+<script src="textkit.js"></script>
+</head>
+<body>
+<div id="book"></div>
+<script>renderAll(STORY);</script>
+</body>
+</html>
